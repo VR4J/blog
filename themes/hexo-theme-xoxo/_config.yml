@@ -18,8 +18,8 @@ favicon: /logo.jpeg
 stylesheets:
 # - /css/normalize.css
 - //cdn.bootcss.com/pure/1.0.0/pure-min.css
-- /css/xoxo.css
-- /css/post.css
+- /blog/css/xoxo.css
+- /blog/css/post.css
 
 # scripts loaded in the end of the body
 scripts:
