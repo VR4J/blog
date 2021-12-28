@@ -11,3 +11,9 @@ a.buymeacoffee {
 span.bottom-item:hover {
     color: inherit;
 }
+
+@media (max-width: 1280px) {
+    .desktop-only {
+        display: none;
+    }
+}
