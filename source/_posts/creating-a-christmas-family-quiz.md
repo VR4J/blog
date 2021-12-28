@@ -264,4 +264,6 @@ As you can see I've left the actual quiz, and leaderboard functionality out of t
 
 Curious to how it all works together? Wait no longer, here is a short dutch demo!
 
-<video src="/videos/quizzer-demo.mov" width="100%" controls />
+<video preload="metadata" width="100%" controls>
+    <source src="/videos/quizzer-demo.mp4" type="video/mp4">
+</video>
