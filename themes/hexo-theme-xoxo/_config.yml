@@ -4,22 +4,22 @@ language: en
 
 # main menu navigation
 menu:
-  home: /blog
-  about: /blog/about
-  tags: /blog/tags
-  archives: /blog/archives
+  home: /
+  about: /about
+  tags: /tags
+  archives: /archives
   # search: /blog/search
   
 
 # Miscelaneous
-favicon: /blog/logo.jpeg
+favicon: /logo.jpeg
 
 # stylesheets loaded in the <head>
 stylesheets:
 # - /css/normalize.css
 - //cdn.bootcss.com/pure/1.0.0/pure-min.css
-- /blog/css/xoxo.css
-- /blog/css/post.css
+- /css/xoxo.css
+- /css/post.css
 
 # scripts loaded in the end of the body
 scripts:
@@ -30,6 +30,6 @@ scripts:
 show_excerpt: true
 show_date: true
 #footer
-index_page: /blog
-main_site: /blog/archives
+index_page: /
+main_site: /archives
 github: https://github.com/VR4J

@@ -17,7 +17,7 @@ Well this year I'm going to build an interactive quiz where we'll display questi
 Just interested in the source code? Check out the [backend repository](https://github.com/VR4J/quizzer-service) and [front-end repository](https://github.com/VR4J/quizzer-front-end) on Github.
 
 ## The bigger picture
-<img class="right-side" src="/blog/images/the-bigger-picture.jpeg" />
+<img class="right-side" src="/images/the-bigger-picture.jpeg" />
 
 <p style="text-align: justify;">Since we want the whole family to play, we have multiple phones that will be connected to our backend service, while only one tv will be displaying the questions, timers, etc. Meaning we will have two different kind of clients, a <b>player</b> and <b>observer</b>.</p>
 
@@ -264,4 +264,4 @@ As you can see I've left the actual quiz, and leaderboard functionality out of t
 
 Curious to how it all works together? Wait no longer, here is a short dutch demo!
 
-<video src="/blog/videos/quizzer-demo.mov" width="100%" controls />
+<video src="/videos/quizzer-demo.mov" width="100%" controls />
