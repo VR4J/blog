@@ -1,0 +1,35 @@
+
+# html lang
+language: en
+
+# main menu navigation
+menu:
+  home: /
+  about: /about
+  tags: /tags
+  archives: /archives
+  search: /search
+  
+
+# Miscelaneous
+favicon: /logo.jpeg
+
+# stylesheets loaded in the <head>
+stylesheets:
+# - /css/normalize.css
+- //cdn.bootcss.com/pure/1.0.0/pure-min.css
+- /css/xoxo.css
+- /css/post.css
+
+# scripts loaded in the end of the body
+scripts:
+#- //cdn.bootcss.com/zepto/1.2.0/zepto.min.js
+#- /js/xoxo.js
+
+# switch
+show_excerpt: true
+show_date: true
+#footer
+index_page: /
+main_site: /archives
+github: https://github.com/VR4J
