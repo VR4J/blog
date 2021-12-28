@@ -20,6 +20,7 @@ stylesheets:
 - //cdn.bootcss.com/pure/1.0.0/pure-min.css
 - /css/xoxo.css
 - /css/post.css
+- /css/footer.css
 
 # scripts loaded in the end of the body
 scripts:

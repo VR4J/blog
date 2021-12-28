@@ -1,0 +1,13 @@
+a.brave {
+    border-bottom: 2px solid #5705A2;
+    color: black;
+}
+
+a.buymeacoffee {
+    border-bottom: 2px solid #fd0;
+    color: black;
+}
+
+span.bottom-item:hover {
+    color: inherit;
+}
