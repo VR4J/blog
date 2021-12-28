@@ -8,12 +8,10 @@ a.buymeacoffee {
     color: black;
 }
 
-span.bottom-item:hover {
-    color: inherit;
+span.bottom-item {
+    display: block;
 }
 
-@media (max-width: 1280px) {
-    .desktop-only {
-        display: none;
-    }
+span.bottom-item:hover {
+    color: inherit;
 }
