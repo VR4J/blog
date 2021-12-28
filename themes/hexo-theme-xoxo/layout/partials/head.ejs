@@ -1,11 +1,12 @@
 <%
-var pageTitle = page.title || '';
-if (is_archive()) pageTitle = 'archives';
-if (is_tag()) pageTitle = 'tag: ' + page.tag;
-if (is_category()) pageTitle = 'category: ' + page.category;
+var pageTitle = '[' + config.title + '] ' 
+pageTitle += page.title || '';
+if (is_archive()) pageTitle += 'Archives';
+if (is_tag()) pageTitle += 'Tag: ' + page.tag;
+if (is_category()) pageTitle += 'Category: ' + page.category;
 if (is_month()) pageTitle += ': ' + page.month + '/' + page.year;
 if (is_year()) pageTitle += ': ' + page.year;
-pageTitle += '[' + config.title + ']';
+
 if (is_home()) pageTitle += ' '  +config.subtitle;
 %>
 
