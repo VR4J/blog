@@ -101,7 +101,7 @@ public class WebsocketConfiguration {
     }
 }
 ```
-We can now define our websocket handler, which allow us to start communicating to clients. Since we're using Webflux we can only send data to the client by using a [Reactive Streams Publisher](https://www.reactive-streams.org/reactive-streams-1.0.3-javadoc/org/reactivestreams/Publisher.html) which we'll implement shortly.
+We can now define our websocket handler, which allow us to start communicating to clients. Since we're using Webflux we can only send data to the client by using a [Reactive Streams Publisher](https://projectreactor.io/docs/core/release/api/reactor/core/publisher/package-summary.html) which we'll implement shortly.
 ```java
 @Slf4j
 @Component
@@ -122,7 +122,7 @@ Since uncle Joe is not as familiar with his new iPhone yet, we need to make sure
 const socket = new WebSocket(`ws://${ip}:8081/websocket?session_id=${session_id}`);
 ```
 
-Since the backend will now get a unique identifier for every player, we can store and track all players and connect a *Sink* to every client to allow sending messages to specific players.
+Since the backend will now get a unique identifier for every player, we can connect a [Sink](https://projectreactor.io/docs/core/snapshot/api/reactor/core/publisher/Sinks.html) to every client to allow sending messages to specific players.
 
 ```java
 private final MessagingService service;
@@ -184,22 +184,22 @@ Our process is mainly built based on a *"request-reply"* principle, where the fo
 4. Observer receives player joined (optional)
 
 #### Playing Question
-&nbsp;&nbsp; 4. Observer requests next question
-&nbsp;&nbsp; 5. Observer receives next question
-&nbsp;&nbsp; 6. Player receives multiple choice answers to question
+1. Observer requests next question
+2. Observer receives next question
+3. Player receives multiple choice answers to question
 
 #### Answering
-&nbsp;&nbsp; 7. Player sends *picked answer* message
-&nbsp;&nbsp; 8. Observer receives player answered 'in x seconds' message
+1. Player sends *picked answer* message
+2. Observer receives player answered 'in x seconds' message
 
 #### Requesting Results
-&nbsp;&nbsp; 9. Observer requests question results
-&nbsp;&nbsp; 10. Observer receives players result messages
-&nbsp;&nbsp; 11. Player receives correct answer feedback
+1. Observer requests question results
+2. Observer receives players result messages
+3. Player receives correct answer feedback
 
 #### Checking Leaderboard
-&nbsp;&nbsp; 12. Observer requests leaderboard
-&nbsp;&nbsp; 13. Observer receives leaderboard
+1. Observer requests leaderboard
+2. Observer receives leaderboard
 
 
 ```java
@@ -262,7 +262,7 @@ As you can see I've left the actual quiz, and leaderboard functionality out of t
 
 ### Demo
 
-Curious to how it all works together? Wait no longer, here is a short dutch demo!
+Curious to how it all works together? Wait no longer, here is a short demo!
 
 <video preload="metadata" width="100%" controls>
     <source src="/videos/quizzer-demo.mp4" type="video/mp4">
