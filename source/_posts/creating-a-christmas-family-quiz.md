@@ -122,7 +122,7 @@ Since uncle Joe is not as familiar with his new iPhone yet, we need to make sure
 const socket = new WebSocket(`ws://${ip}:8081/websocket?session_id=${session_id}`);
 ```
 
-Since the backend will now get a unique identifier for every player, we can store and track all players and assign a *Sink* to every client which allows us to send messages to that websocket connection.
+Since the backend will now get a unique identifier for every player, we can store and track all players and connect a *Sink* to every client to allow sending messages to specific players.
 
 ```java
 private final MessagingService service;
