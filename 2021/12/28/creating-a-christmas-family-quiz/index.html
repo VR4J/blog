@@ -1,0 +1,322 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#202020"/>
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  
+    <meta name="keywords" content="Spring Boot,Webflux,Java 17,Websockets," />
+  
+
+  
+    <meta name="description" content="Building a multi-device websocket based pubquiz" />
+  
+  
+  <link rel="icon" type="image/x-icon" href="/logo.jpeg">
+  <title>Building a multi-device websocket based pubquiz[J. Vreijsen]</title>
+  
+    <!-- stylesheets list from config.yml -->
+    
+      <link rel="stylesheet" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css">
+    
+      <link rel="stylesheet" href="/css/xoxo.css">
+    
+      <link rel="stylesheet" href="/css/post.css">
+    
+  
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+
+<body>
+  <div class="nav-container">
+    <nav class="home-menu pure-menu pure-menu-horizontal">
+  <a class="pure-menu-heading" href="/">
+    <img class="avatar" src="https://VR4J.github.io/blog/images/logo.jpeg">
+    <span class="title">J. Vreijsen</span>
+  </a>
+
+  <ul class="pure-menu-list clearfix">
+      
+          
+            <li class="pure-menu-item"><a href="/" class="pure-menu-link">Home</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/about" class="pure-menu-link">About</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/tags" class="pure-menu-link">Tags</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/archives" class="pure-menu-link">Archives</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/search" class="pure-menu-link">Search</a></li>
+          
+      
+  </ul>
+   
+</nav>
+  </div>
+
+  <div class="container" id="content-outer">
+    <div class="inner" id="content-inner">
+      <div class="post-container">
+  <article class="post" id="post">
+    <header class="post-header text-center">
+      <h1 class="title">
+        Building a multi-device websocket based pubquiz
+      </h1>
+      <span>
+        
+        <time class="time" datetime="2021-12-28T10:32:11.185Z">
+        2021-12-28
+      </time>
+        
+      </span>
+      <span class="slash">/</span>
+      <span class="post-meta">
+      <span class="post-tags">
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/Java-17/" rel="tag">Java 17</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/Spring-Boot/" rel="tag">Spring Boot</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/Webflux/" rel="tag">Webflux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/Websockets/" rel="tag">Websockets</a></li></ul>
+      </span>
+    </span>
+      <span class="slash">/</span>
+      <span class="read">Reading Time: 8 Minute</span>
+    </header>
+
+    <div class="post-content">
+      <p>Christmas is a time of beatiful lid homes, christmas trees, gifts and… akward family dinners. Unfortunately mine tend to take ages, while sitting and talking about the weather, politics, and other <em>&lt;sarcasm&gt;</em> very exciting stuff <em>&lt;/sarcasm&gt;</em>. </p>
+<h2 id="Let’s-try-something-different"><a href="#Let’s-try-something-different" class="headerlink" title="Let’s try something different"></a>Let’s try something different</h2><p>Well this year I’m going to build an interactive quiz where we’ll display questions and riddles on the tv screen while everyone can answer them using their own cellphones.</p>
+<p>Just interested in the source code? <a target="_blank" rel="noopener" href="https://github.com/VR4J/quizzer">Check it out on Github</a>.</p>
+<h2 id="The-bigger-picture"><a href="#The-bigger-picture" class="headerlink" title="The bigger picture"></a>The bigger picture</h2><img class="right-side" src="/images/the-bigger-picture.jpeg" />
+
+<p style="text-align: justify;">Since we want the whole family to play, we have multiple phones that will be connected to our backend service, while only one tv will be displaying the questions, timers, etc. Meaning we will have two different kind of clients, a <b>player</b> and <b>observer</b>.</p>
+
+<p style="text-align: justify;">Both will be connected to our websocket server which will hold the responsibility to align every client on the state of the quiz.</p>
+
+<h2 id="Setting-up-our-websocket-server"><a href="#Setting-up-our-websocket-server" class="headerlink" title="Setting up our websocket server"></a>Setting up our websocket server</h2><p>As we said we’re going to use a Spring Boot application for our websocket server, so let’s set that up.</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">plugins &#123;</span><br><span class="line">	id <span class="string">&#x27;org.springframework.boot&#x27;</span> version <span class="string">&#x27;2.5.6&#x27;</span></span><br><span class="line">	id <span class="string">&#x27;io.spring.dependency-management&#x27;</span> version <span class="string">&#x27;1.0.11.RELEASE&#x27;</span></span><br><span class="line">	id <span class="string">&#x27;java&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">group = <span class="string">&#x27;com.vreijsen&#x27;</span></span><br><span class="line">version = <span class="string">&#x27;0.0.1-SNAPSHOT&#x27;</span></span><br><span class="line">sourceCompatibility = <span class="string">&#x27;17&#x27;</span></span><br><span class="line"></span><br><span class="line">configurations &#123;</span><br><span class="line">	compileOnly &#123;</span><br><span class="line">		extendsFrom annotationProcessor</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">repositories &#123;</span><br><span class="line">	mavenCentral()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Since we want to use the preview features of Java 17</span></span><br><span class="line">tasks.withType(JavaCompile) &#123;</span><br><span class="line">	options.compilerArgs += <span class="string">&quot;--enable-preview&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">dependencies &#123;</span><br><span class="line">	annotationProcessor(<span class="string">&quot;org.springframework.boot:spring-boot-configuration-processor&quot;</span>)</span><br><span class="line"></span><br><span class="line">	implementation(<span class="string">&quot;org.springframework.boot:spring-boot-starter-webflux&quot;</span>)</span><br><span class="line">	implementation(<span class="string">&#x27;org.springframework:spring-context&#x27;</span>)</span><br><span class="line"></span><br><span class="line">	implementation(<span class="string">&#x27;commons-io:commons-io:2.11.0&#x27;</span>)</span><br><span class="line"></span><br><span class="line">	implementation(<span class="string">&quot;javax.servlet:javax.servlet-api:4.0.1&quot;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Just because we love Lombok &lt;3</span></span><br><span class="line">	compileOnly <span class="string">&#x27;org.projectlombok:lombok:1.18.20&#x27;</span></span><br><span class="line">	annotationProcessor <span class="string">&#x27;org.projectlombok:lombok:1.18.20&#x27;</span></span><br><span class="line"></span><br><span class="line">	testImplementation <span class="string">&#x27;org.springframework.boot:spring-boot-starter-test&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">test &#123;</span><br><span class="line">	useJUnitPlatform()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Let’s setup the Websocket configuration</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@RequiredArgsConstructor</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WebsocketConfiguration</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> WebSocketHandler handler;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> HandlerMapping <span class="title">webSocketHandlerMapping</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Map&lt;String, WebSocketHandler&gt; urlMap = <span class="keyword">new</span> HashMap&lt;&gt;()&#123;&#123;</span><br><span class="line">            put(<span class="string">&quot;/websocket&quot;</span>, handler);</span><br><span class="line">        &#125;&#125;;</span><br><span class="line"></span><br><span class="line">        SimpleUrlHandlerMapping handlerMapping = <span class="keyword">new</span> SimpleUrlHandlerMapping();</span><br><span class="line">        handlerMapping.setOrder(<span class="number">1</span>);</span><br><span class="line">        handlerMapping.setUrlMap(urlMap);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> handlerMapping;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> WebSocketHandlerAdapter <span class="title">handlerAdapter</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> WebSocketHandlerAdapter();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>We can now define our websocket handler, which allow us to start communicating to clients. Since we’re using Webflux we can only send data to the client by using a <a target="_blank" rel="noopener" href="https://www.reactive-streams.org/reactive-streams-1.0.3-javadoc/org/reactivestreams/Publisher.html">Reactive Streams Publisher</a> which we’ll implement shortly.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WebsocketHandler</span> <span class="keyword">implements</span> <span class="title">WebSocketHandler</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Mono&lt;Void&gt; <span class="title">handle</span><span class="params">(WebSocketSession session)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// TODO</span></span><br><span class="line">        <span class="keyword">return</span> Mono.empty()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Let’s-handle-player-registration"><a href="#Let’s-handle-player-registration" class="headerlink" title="Let’s handle player registration"></a>Let’s handle player registration</h2><p>Since uncle Joe is not as familiar with his new iPhone yet, we need to make sure losing connection is not an issue and we can reconnect with a new websocket connection to an existing player. We can achieve this by letting every client / phone send its own unique session id, and store it for future reconnects.</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> socket = <span class="keyword">new</span> WebSocket(<span class="string">`ws://<span class="subst">$&#123;ip&#125;</span>:8081/websocket?session_id=<span class="subst">$&#123;session_id&#125;</span>`</span>);</span><br></pre></td></tr></table></figure>
+
+<p>Since the backend will now get a unique identifier for every player, we can store and track all players and assign a <em>Sink</em> to every client which allows us to send messages to that websocket connection.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> MessagingService service;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> MessageListener listener;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Mono&lt;Void&gt; <span class="title">handle</span><span class="params">(WebSocketSession session)</span> </span>&#123;</span><br><span class="line">    String sessionId = getSessionId(session.getHandshakeInfo().getUri());</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Get stream of messages specific for this player / observer</span></span><br><span class="line">    Flux&lt;WebSocketMessage&gt; messages = service.getMessages(sessionId)</span><br><span class="line">            .map(session::textMessage);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Get stream of messages coming from this specific player / observer</span></span><br><span class="line">    Flux&lt;WebSocketMessage&gt; reading = session.receive()</span><br><span class="line">            .doOnNext(message -&gt; onMessage(message.getPayloadAsText(), sessionId)) ;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> session.send(messages).and(reading);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>We’ll create a <em>MessagingService</em> which sole responsibility is to keep track of the session Sinks and expose a method to send a message to a specific session.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@RequiredArgsConstructor</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MessagingService</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Map&lt;String, Sinks.Many&lt;String&gt;&gt; sinks = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ObjectMapper mapper;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onNext</span><span class="params">(Message next, String session)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(! sinks.containsKey(session)) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            String payload = mapper.writeValueAsString(next);</span><br><span class="line">            sinks.get(session).emitNext(payload, Sinks.EmitFailureHandler.FAIL_FAST);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (JsonProcessingException e) &#123;</span><br><span class="line">            log.error(<span class="string">&quot;Unable to send message &#123;&#125; to session &#123;&#125;&quot;</span>, next, session, e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Flux&lt;String&gt; <span class="title">getMessages</span><span class="params">(String session)</span> </span>&#123;</span><br><span class="line">        sinks.putIfAbsent(session, Sinks.many().multicast().onBackpressureBuffer());</span><br><span class="line">        <span class="keyword">return</span> sinks.get(session).asFlux();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Acting-on-messages-received"><a href="#Acting-on-messages-received" class="headerlink" title="Acting on messages received"></a>Acting on messages received</h2><p>Now that we’ve established a connection to each client, and can individually send messages to them, we can start building our quizzing logic.</p>
+<p>Our process is mainly built based on a <em>“request-reply”</em> principle, where the following steps are present:</p>
+<h4 id="Connecting"><a href="#Connecting" class="headerlink" title="Connecting"></a>Connecting</h4><ol>
+<li>Observer connects</li>
+<li>Player connects</li>
+<li>Player sends player name</li>
+<li>Observer receives player joined (optional)</li>
+</ol>
+<h4 id="Playing-Question"><a href="#Playing-Question" class="headerlink" title="Playing Question"></a>Playing Question</h4><p>&nbsp;&nbsp; 4. Observer requests next question<br>&nbsp;&nbsp; 5. Observer receives next question<br>&nbsp;&nbsp; 6. Player receives multiple choice answers to question</p>
+<h4 id="Answering"><a href="#Answering" class="headerlink" title="Answering"></a>Answering</h4><p>&nbsp;&nbsp; 7. Player sends <em>picked answer</em> message<br>&nbsp;&nbsp; 8. Observer receives player answered ‘in x seconds’ message</p>
+<h4 id="Requesting-Results"><a href="#Requesting-Results" class="headerlink" title="Requesting Results"></a>Requesting Results</h4><p>&nbsp;&nbsp; 9. Observer requests question results<br>&nbsp;&nbsp; 10. Observer receives players result messages<br>&nbsp;&nbsp; 11. Player receives correct answer feedback</p>
+<h4 id="Checking-Leaderboard"><a href="#Checking-Leaderboard" class="headerlink" title="Checking Leaderboard"></a>Checking Leaderboard</h4><p>&nbsp;&nbsp; 12. Observer requests leaderboard<br>&nbsp;&nbsp; 13. Observer receives leaderboard</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@RequiredArgsConstructor</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MessageListener</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Observer observer;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Quiz quiz;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Leaderboard leaderboard;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onMessage</span><span class="params">(Message wsMessage, String sessionId)</span> </span>&#123;</span><br><span class="line">        MessageType type = wsMessage.getType();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">switch</span> (type) &#123;</span><br><span class="line">            <span class="keyword">case</span> OBSERVER_JOIN -&gt; &#123;</span><br><span class="line">                observer.setSessionId(sessionId);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">case</span> PLAYER_JOIN -&gt; &#123;</span><br><span class="line">                PlayerJoinMessage message = (PlayerJoinMessage) wsMessage;</span><br><span class="line"></span><br><span class="line">                Player player = Player.builder()</span><br><span class="line">                        .id(sessionId)</span><br><span class="line">                        .name(message.getName())</span><br><span class="line">                        .score(<span class="number">0</span>)</span><br><span class="line">                        .build();</span><br><span class="line"></span><br><span class="line">                quiz.register(player, sessionId);</span><br><span class="line"></span><br><span class="line">                <span class="comment">// Notify the observer of a player join.</span></span><br><span class="line">                observer.send(message); </span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">case</span> SHOW_QUESTION -&gt; &#123;</span><br><span class="line">                <span class="comment">// Observer requesting next question</span></span><br><span class="line">                quiz.next();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">case</span> ANSWER -&gt; &#123;</span><br><span class="line">                <span class="comment">// Player answering to question</span></span><br><span class="line">                AnswerMessage message = (AnswerMessage) wsMessage;</span><br><span class="line">                quiz.answer(sessionId, message.getAnswer(), message.getScore());</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">case</span> TIMEOUT -&gt; &#123;</span><br><span class="line">                quiz.showQuestionResult();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">case</span> SHOW_LEADERBOARD -&gt; &#123;</span><br><span class="line">                <span class="comment">// Observer requesting the leaderboard</span></span><br><span class="line">                leaderboard.show();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>There you have it, the process of my own anti-boredom family pub quiz.</p>
+<p>As you can see I’ve left the actual quiz, and leaderboard functionality out of this blogpost, but the full implementation details are available in the <a target="_blank" rel="noopener" href="https://github.com/VR4J/quizzer">Github Repository</a>.</p>
+<h3 id="Demo"><a href="#Demo" class="headerlink" title="Demo"></a>Demo</h3><p>Curious to how it all works together? Wait no longer, here is a short dutch demo!</p>
+<video src="/videos/quizzer-demo.mov" width="100%" controls />
+    </div>
+  </article>
+  <div class="toc-container">
+    
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">Chapters</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Let%E2%80%99s-try-something-different"><span class="toc-text">Let’s try something different</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#The-bigger-picture"><span class="toc-text">The bigger picture</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Setting-up-our-websocket-server"><span class="toc-text">Setting up our websocket server</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Let%E2%80%99s-handle-player-registration"><span class="toc-text">Let’s handle player registration</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Acting-on-messages-received"><span class="toc-text">Acting on messages received</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Connecting"><span class="toc-text">Connecting</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Playing-Question"><span class="toc-text">Playing Question</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Answering"><span class="toc-text">Answering</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Requesting-Results"><span class="toc-text">Requesting Results</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Checking-Leaderboard"><span class="toc-text">Checking Leaderboard</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Demo"><span class="toc-text">Demo</span></a></li></ol></li></ol>
+  </div>
+
+
+  </div>
+</div>
+<div class="copyright">
+
+</div>
+<div class="share" style="width: 100%;">
+  
+</div>
+
+  
+    <!-- <div class="post-nav">
+      <div class="post-nav-item post-nav-next">
+        
+          <span>〈 </span>
+          <a href="/blog/2021/12/27/creating-a-formula-1-simulator/" rel="next" title="Creating a Formula 1 Simulator">
+          Creating a Formula 1 Simulator
+          </a>
+        
+      </div>
+  
+      <div class="post-nav-item post-nav-prev">
+          
+      </div>
+    </div> -->
+  
+
+
+    </div>
+
+    
+
+  </div>
+  <footer class="footer text-center">
+    <div id="bottom-inner">
+        <a class="bottom-item" href="/">Home</a> |
+        <a class="bottom-item" href="/archives">Blog</a> |
+        <a class="bottom-item" href="https://github.com/VR4J" target="_blank">GitHub</a> |
+        <a class="bottom-item" href="https://hexo.io" target="_blank">Powered by hexo</a> |
+        <a class="bottom-item" href="https://github.com/KevinOfNeu/hexo-theme-xoxo" target="_blank">Theme xoxo</a>
+    </div>
+</footer>
+  
+
+<script>
+  (function(window, document, undefined) {
+
+    var timer = null;
+
+    function returnTop() {
+      cancelAnimationFrame(timer);
+      timer = requestAnimationFrame(function fn() {
+        var oTop = document.body.scrollTop || document.documentElement.scrollTop;
+        if (oTop > 0) {
+          document.body.scrollTop = document.documentElement.scrollTop = oTop - 50;
+          timer = requestAnimationFrame(fn);
+        } else {
+          cancelAnimationFrame(timer);
+        }
+      });
+    }
+
+    var hearts = [];
+    window.requestAnimationFrame = (function() {
+      return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function(callback) {
+          setTimeout(callback, 1000 / 60);
+        }
+    })();
+    init();
+
+    function init() {
+      css(".heart{z-index:9999;width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: absolute;}.heart:after{top: -5px;}.heart:before{left: -5px;}");
+      attachEvent();
+      gameloop();
+      addMenuEvent();
+    }
+
+    function gameloop() {
+      for (var i = 0; i < hearts.length; i++) {
+        if (hearts[i].alpha <= 0) {
+          document.body.removeChild(hearts[i].el);
+          hearts.splice(i, 1);
+          continue;
+        }
+        hearts[i].y--;
+        hearts[i].scale += 0.004;
+        hearts[i].alpha -= 0.013;
+        hearts[i].el.style.cssText = "left:" + hearts[i].x + "px;top:" + hearts[i].y + "px;opacity:" + hearts[i].alpha + ";transform:scale(" + hearts[i].scale + "," + hearts[i].scale + ") rotate(45deg);background:" + hearts[i].color;
+      }
+      requestAnimationFrame(gameloop);
+    }
+
+    /**
+     * 给logo设置点击事件
+     * 
+     * - 回到顶部
+     * - 出现爱心
+     */
+    function attachEvent() {
+      var old = typeof window.onclick === "function" && window.onclick;
+      var logo = document.getElementById("logo");
+      if (logo) {
+        logo.onclick = function(event) {
+          returnTop();
+          old && old();
+          createHeart(event);
+        }
+      }
+      
+    }
+
+    function createHeart(event) {
+      var d = document.createElement("div");
+      d.className = "heart";
+      hearts.push({
+        el: d,
+        x: event.clientX - 5,
+        y: event.clientY - 5,
+        scale: 1,
+        alpha: 1,
+        color: randomColor()
+      });
+      document.body.appendChild(d);
+    }
+
+    function css(css) {
+      var style = document.createElement("style");
+      style.type = "text/css";
+      try {
+        style.appendChild(document.createTextNode(css));
+      } catch (ex) {
+        style.styleSheet.cssText = css;
+      }
+      document.getElementsByTagName('head')[0].appendChild(style);
+    }
+
+    function randomColor() {
+      // return "rgb(" + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + ")";
+      return "#F44336";
+    }
+
+    function addMenuEvent() {
+      var menu = document.getElementById('menu-main-post');
+      if (menu) {
+        var toc = document.getElementById('toc');
+        if (toc) {
+          menu.onclick = function() {
+            if (toc) {
+              if (toc.style.display == 'block') {
+                toc.style.display = 'none';
+              } else {
+                toc.style.display = 'block';
+              }
+            }
+          };
+        } else {
+          menu.style.display = 'none';
+        }
+      }
+    }
+
+  })(window, document);
+</script>
+
+  
+
+
+
+</body>
+</html>
