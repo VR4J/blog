@@ -14,10 +14,10 @@ Christmas is a time of beatiful lid homes, christmas trees, gifts and... akward 
 ## Let's try something different
 Well this year I'm going to build an interactive quiz where we'll display questions and riddles on the tv screen while everyone can answer them using their own cellphones.
 
-Just interested in the source code? [Check it out on Github](https://github.com/VR4J/quizzer).
+Just interested in the source code? Check out the [backend repository](https://github.com/VR4J/quizzer-service) and [front-end repository](https://github.com/VR4J/quizzer-front-end) on Github.
 
 ## The bigger picture
-<img class="right-side" src="/images/the-bigger-picture.jpeg" />
+<img class="right-side" src="/blog/images/the-bigger-picture.jpeg" />
 
 <p style="text-align: justify;">Since we want the whole family to play, we have multiple phones that will be connected to our backend service, while only one tv will be displaying the questions, timers, etc. Meaning we will have two different kind of clients, a <b>player</b> and <b>observer</b>.</p>
 
@@ -258,10 +258,10 @@ public class MessageListener {
 
 There you have it, the process of my own anti-boredom family pub quiz.
 
-As you can see I've left the actual quiz, and leaderboard functionality out of this blogpost, but the full implementation details are available in the [Github Repository](https://github.com/VR4J/quizzer).
+As you can see I've left the actual quiz, and leaderboard functionality out of this blogpost, but the full implementation details are available in the [Github Repository](https://github.com/VR4J/quizzer-service).
 
 ### Demo
 
 Curious to how it all works together? Wait no longer, here is a short dutch demo!
 
-<video src="/videos/quizzer-demo.mov" width="100%" controls />
+<video src="/blog/videos/quizzer-demo.mov" width="100%" controls />
