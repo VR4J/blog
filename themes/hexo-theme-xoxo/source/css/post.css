@@ -2,3 +2,55 @@ img.right-side {
     float: right;
     margin-left: 1.5em;
 }
+
+img.left-side {
+    float: left;
+    margin-right: 1.5em;
+}
+
+a.java {
+    color: black !important;
+    border-bottom: 2px solid #f89820;
+}
+
+a.blog {
+    color: black !important;
+    border-bottom: 2px solid #2196F3;
+}
+
+a.kotlin {
+    color: black !important;
+    border-bottom: 2px solid #B75EA4;
+}
+
+a.linkedin {
+    color: black !important;
+    border-bottom: 2px solid #0072b1;
+}
+
+a.kabisa {
+    color: black !important;
+    border-bottom: 2px solid #55cd96;
+}
+
+a.monster {
+    color: black !important;
+    border-bottom: 2px solid black;
+}
+
+a.formula-one {
+    color: black !important;
+    border-bottom: 2px solid #FF1801;
+}
+
+img.me {
+    width: 40%;
+}
+
+@media (max-width: 860px) {
+    img.me {
+        width: 100%;
+        margin-bottom: 1.5em;
+    }
+}
+

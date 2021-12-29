@@ -12,7 +12,7 @@ menu:
   
 
 # Miscelaneous
-favicon: /logo.jpeg
+favicon: /favicon.ico
 
 # stylesheets loaded in the <head>
 stylesheets:
