@@ -1,13 +1,13 @@
 <%
-var pageTitle = '[' + config.title + '] ' 
-pageTitle += page.title || '';
-if (is_archive()) pageTitle += 'Archives';
-if (is_tag()) pageTitle += 'Tag: ' + page.tag;
-if (is_category()) pageTitle += 'Category: ' + page.category;
-if (is_month()) pageTitle += ': ' + page.month + '/' + page.year;
-if (is_year()) pageTitle += ': ' + page.year;
+var pageTitle = '[' + config.title + ']' 
+if (page.title) pageTitle += ' ' + page.title
+if (is_archive()) pageTitle += ' Archives';
+if (is_tag()) pageTitle += ' Tag: ' + page.tag;
+if (is_category()) pageTitle += ' Category: ' + page.category;
+if (is_month()) pageTitle += ' : ' + page.month + '/' + page.year;
+if (is_year()) pageTitle += ' : ' + page.year;
 
-if (is_home()) pageTitle += ' '  +config.subtitle;
+if (is_home()) pageTitle += ' '  + config.subtitle;
 %>
 
 <head>
@@ -15,17 +15,41 @@ if (is_home()) pageTitle += ' '  +config.subtitle;
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#202020"/>
   <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+  <meta name="title" content="<%=pageTitle%>">
+  
+  <% if (page.excerpt) { %>
+    <meta name="description" content="<%= page.excerpt %>" />
+    <meta property="og:description" content="<%= page.excerpt %>">
+    <meta property="twitter:description" content="<%= page.excerpt %>">
+  <% } else {  %>
+    <meta name="description" content="<%= config.description %>" />
+    <meta property="og:description" content="<%= config.description %>">
+    <meta property="twitter:description" content="<%= config.description %>">
+  <% } %>
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="<%=config.url%>">
+  <meta property="og:title" content="<%=pageTitle%>">
+
+  <% if (page.image) { %>
+    <meta property="twitter:image" content="<%= (config.url + page.image) %>">
+    <meta property="og:image" content="<%= (config.url + page.image) %>">
+  <% } else {  %>
+    <meta property="og:image" content="<%= (config.url + '/images/logo.jpeg') %>">
+    <meta property="twitter:image" content="<%= (config.url + '/images/logo.jpeg') %>">
+  <% } %>
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="<%= config.url %>">
+  <meta property="twitter:title" content="<%= pageTitle %>">
   
   <% if (page.tags && page.tags.length) { %>
     <meta name="keywords" content="<% page.tags.forEach(function(tag) { %><%= tag.name %>,<% }); %>" />
   <% } else { %>
     <meta name="keywords" content="<%= config.keywords %>" />
-  <% } %>
-
-  <% if (config.description) { %>
-    <meta name="description" content="<%= config.description %>" />
-  <% } else {  %>
-    <meta name="description" content="<%= page.description || page.title || (config.title + ',' + config.subtitle) %>" />
   <% } %>
   
   <link rel="icon" type="image/x-icon" href="/favicon.ico">

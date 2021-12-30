@@ -1,6 +1,7 @@
 ---
 title: Building a multi-device websocket based pubquiz
 icon: 🎄
+image: /images/family-pub-quiz-social-media-banner.jpg
 tags:
     - Spring Boot
     - Webflux
