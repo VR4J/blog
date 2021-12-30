@@ -19,7 +19,14 @@ if (is_home()) pageTitle += ' '  + config.subtitle;
   <meta name="title" content="<%=page.title%>">
 
   <% if (page.date) { %>
+    <meta name="publish_date" property="og:publish_date" content="<%= page.date.format() %>">
     <meta property="article:published_time" content="<%= page.date.format('YYYY-MM-DD') %>" />
+
+    <% if (page.tags) { %>
+      <% page.tags.forEach(function(tag) { %>
+        <meta property="article:tag" content="<%= tag.name %>" />
+      <% }); %>
+    <% } %>
   <% } %>
   
   <% if (page.excerpt) { %>
