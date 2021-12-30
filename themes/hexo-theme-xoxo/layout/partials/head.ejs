@@ -18,7 +18,7 @@ if (is_home()) pageTitle += ' '  + config.subtitle;
 
   <meta name="title" content="<%=page.title%>">
 
-  <meta name="publish_date" property="og:publish_date" content="<%= page.date.toISOString() %>">
+  <meta name="publish_date" property="og:publish_date" content="<%= page.date.format() %>">
   
   <% if (page.excerpt) { %>
     <meta name="description" content="<%= page.excerpt %>" />
