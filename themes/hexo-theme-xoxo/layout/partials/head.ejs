@@ -30,7 +30,7 @@ if (is_home()) pageTitle += ' '  + config.subtitle;
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
-  <meta property="og:url" content="<%=config.url%>">
+  <meta property="og:url" content="<%= page.permalink %>">
   <meta property="og:title" content="<%= page.title %>">
 
   <% if (page.image) { %>
@@ -43,7 +43,7 @@ if (is_home()) pageTitle += ' '  + config.subtitle;
 
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image">
-  <meta property="twitter:url" content="<%= config.url %>">
+  <meta property="twitter:url" content="<%= page.permalink %>">
   <meta property="twitter:title" content="<%= page.title %>">
   
   <% if (page.tags && page.tags.length) { %>
