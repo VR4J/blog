@@ -1,5 +1,6 @@
 ---
 title: Building a multi-device websocket based pubquiz
+date: 2021-12-28 11:58:30
 icon: 🎄
 image: /images/family-pub-quiz-social-media-banner.jpg
 tags:
