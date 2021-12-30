@@ -16,7 +16,7 @@ if (is_home()) pageTitle += ' '  + config.subtitle;
   <meta name="theme-color" content="#202020"/>
   <meta http-equiv="x-ua-compatible" content="ie=edge">
 
-  <meta name="title" content="<%=pageTitle%>">
+  <meta name="title" content="<%=page.title%>">
   
   <% if (page.excerpt) { %>
     <meta name="description" content="<%= page.excerpt %>" />
@@ -31,7 +31,7 @@ if (is_home()) pageTitle += ' '  + config.subtitle;
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="<%=config.url%>">
-  <meta property="og:title" content="<%=pageTitle%>">
+  <meta property="og:title" content="<%= page.title %>">
 
   <% if (page.image) { %>
     <meta property="twitter:image" content="<%= (config.url + page.image) %>">
@@ -44,7 +44,7 @@ if (is_home()) pageTitle += ' '  + config.subtitle;
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image">
   <meta property="twitter:url" content="<%= config.url %>">
-  <meta property="twitter:title" content="<%= pageTitle %>">
+  <meta property="twitter:title" content="<%= page.title %>">
   
   <% if (page.tags && page.tags.length) { %>
     <meta name="keywords" content="<% page.tags.forEach(function(tag) { %><%= tag.name %>,<% }); %>" />
