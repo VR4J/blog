@@ -17,6 +17,8 @@ if (is_home()) pageTitle += ' '  + config.subtitle;
   <meta http-equiv="x-ua-compatible" content="ie=edge">
 
   <meta name="title" content="<%=page.title%>">
+
+  <meta name="publish_date" property="og:publish_date" content="<%= page.date.toISOString() %>">
   
   <% if (page.excerpt) { %>
     <meta name="description" content="<%= page.excerpt %>" />
@@ -51,6 +53,8 @@ if (is_home()) pageTitle += ' '  + config.subtitle;
   <% } else { %>
     <meta name="keywords" content="<%= config.keywords %>" />
   <% } %>
+
+  <meta name="author" content="Joery Vreijsen">
   
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <title><%=pageTitle%></title>
