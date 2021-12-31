@@ -27,11 +27,6 @@ date: 2021-12-31 09:28:48
 
 <script>
     let form = document.getElementById('contact-form');
-    
-    if(screen.width <= 500) {
-        $(".g-recaptcha").attr("data-size", "compact")
-        grecaptcha.reset()
-    }
 
     form.onsubmit = (e) => {
         e.preventDefault();
