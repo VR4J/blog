@@ -8,6 +8,7 @@ menu:
   about: /about
   tags: /tags
   archives: /archives
+  contact: /contact
   # search: /blog/search
   
 
@@ -21,6 +22,7 @@ stylesheets:
 - /css/xoxo.css
 - /css/post.css
 - /css/footer.css
+- /css/contact.css
 
 # scripts loaded in the end of the body
 scripts:

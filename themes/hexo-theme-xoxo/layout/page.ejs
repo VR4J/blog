@@ -1,6 +1,15 @@
 <article class="post page" id="page">
-  <header class="post-header text-center">
-  </header>
+  <% if(page.header) { %>
+    <header class="post-header text-center">
+      <h1 class="title"><%= page.header %></h1>
+
+      <% if(page.excerpt) { %>
+        <div class="page-excerpt">
+          <%= page.excerpt %>
+        </div>
+      <% } %>
+    </header>
+  <% } %>
   <div class="post-content">
     <% if (page.type === "tags"){ %>
           <% if (site.tags.length){ %>
