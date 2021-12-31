@@ -19,6 +19,7 @@
 .control-container input[type='submit'] {
     display: flex; 
     align-self: end;
+    margin-bottom: 3px;
 }
 
 .control-container .g-recaptcha {
