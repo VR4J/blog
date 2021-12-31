@@ -33,13 +33,18 @@
 
     .control-container .g-recaptcha {
         align-self: center;
-        transform: scale(0.91);
         margin-bottom: 15px;
     }
 
     .control-container input[type='submit'] {
         width: 100%;
         text-align: center;
+    }
+}
+
+@media(max-width: 375px) {
+    .control-container .g-recaptcha {
+        transform: scale(0.91);
     }
 }
 
