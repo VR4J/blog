@@ -33,6 +33,7 @@
 
     .control-container .g-recaptcha {
         align-self: center;
+        transform: scale(0.91);
     }
 
     .control-container input[type='submit'] {
