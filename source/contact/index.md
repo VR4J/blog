@@ -18,6 +18,10 @@ date: 2021-12-31 09:28:48
     <div style="display: flex; align-self: end;" class="g-recaptcha" data-sitekey="6Le3sd4dAAAAAF-bzYkrJggdMd0XuPtbo3EoL81_"></div>
 </div>
 
+<div id="captcha-validation" style="display: none; flex-direction: row; justify-content: end;">
+    <p style="display: flex; color: red; font-size: 14px; align-self: end;">Please verify that you're not a robot.. (beep boop beep beep boop).</p>
+</div>
+
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
@@ -27,28 +31,32 @@ date: 2021-12-31 09:28:48
     form.onsubmit = (e) => {
         e.preventDefault();
 
-        console.log(grecaptcha.getResponse())
+        if(grecaptcha.getResponse().length) {
+            $("#captcha-validation").css("display", "none")
 
-        $("input[type='submit']").val("Submitting...")
-        $("input[type='submit']").attr("disabled", true)
-      
-        $.ajax({
-            url: "https://script.google.com/macros/s/AKfycbxH8WG1LKFCKLxqnogx_STwozCKsSr2LTVsRvBHoUOOFKqDYWnLXd7pJIUMP8HXphaiBw/exec",
-            method: "POST",
-            dataType: "json",
-            data: $("#contact-form").serialize(),
-            success: function(response) {
-                
-                if(response.result == "success") {
-                    window.location.href = '/contact-success';
-                }
-                else {
+            $("input[type='submit']").val("Submitting...")
+            $("input[type='submit']").attr("disabled", true)
+        
+            $.ajax({
+                url: "https://script.google.com/macros/s/AKfycbxH8WG1LKFCKLxqnogx_STwozCKsSr2LTVsRvBHoUOOFKqDYWnLXd7pJIUMP8HXphaiBw/exec",
+                method: "POST",
+                dataType: "json",
+                data: $("#contact-form").serialize(),
+                success: function(response) {
+                    
+                    if(response.result == "success") {
+                        window.location.href = '/contact-success';
+                    }
+                    else {
+                        window.location.href = '/contact-error';
+                    }
+                },
+                error: function() {
                     window.location.href = '/contact-error';
                 }
-            },
-            error: function() {
-                window.location.href = '/contact-error';
-            }
-        })
+            })
+        } else {
+            $("#captcha-validation").css("display", "flex")
+        }   
     }
 </script>
