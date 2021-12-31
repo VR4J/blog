@@ -14,5 +14,5 @@ Apart from spending my time giving in to my Monster Energy addiction, I develop 
 
 When i'm not doing any of the above, it probably means i'm enjoying the roaring engines of some <a class="formula-one" href="https://f1.com">Formula 1</a> venue.
 
-Still don't know enough? Sheer not, and <a class="blog" href="">contact me</a> now!
+Still don't know enough? Sheer not, and <a class="blog" href="/contact">contact me</a> now!
 </p>
