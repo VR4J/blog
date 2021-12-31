@@ -9,20 +9,25 @@
   <meta name="theme-color" content="#202020"/>
   <meta http-equiv="x-ua-compatible" content="ie=edge">
 
-  <meta name="title" content="">
+  <meta name="title" content="Contact">
 
   
+    <meta name="publish_date" property="og:publish_date" content="2021-12-31T09:28:48+00:00">
+    <meta property="article:published_time" content="2021-12-31" />
+
+    
   
   
-    <meta name="description" content="Sharing my experience as a Java developer and bringing you all the fun side-projects that i&#39;ve build over the years!" />
-    <meta property="og:description" content="Sharing my experience as a Java developer and bringing you all the fun side-projects that i&#39;ve build over the years!" />
-    <meta property="twitter:description" content="Sharing my experience as a Java developer and bringing you all the fun side-projects that i&#39;ve build over the years!" />
+  
+    <meta name="description" content="Use this form below if you want to get in personal contact with me, and i&#39;ll make sure your personal information is handled with the utter most care." />
+    <meta property="og:description" content="Use this form below if you want to get in personal contact with me, and i&#39;ll make sure your personal information is handled with the utter most care." />
+    <meta property="twitter:description" content="Use this form below if you want to get in personal contact with me, and i&#39;ll make sure your personal information is handled with the utter most care." />
   
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="" />
-  <meta property="og:title" content="" />
+  <meta property="og:url" content="https://blog.vreijsenj.nl/contact/index.html" />
+  <meta property="og:title" content="Contact" />
 
   
     <meta property="og:image" content="https://blog.vreijsenj.nl/images/logo.jpeg" />
@@ -31,8 +36,8 @@
 
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image" />
-  <meta property="twitter:url" content="" />
-  <meta property="twitter:title" content="" />
+  <meta property="twitter:url" content="https://blog.vreijsenj.nl/contact/index.html" />
+  <meta property="twitter:title" content="Contact" />
   
   
     <meta name="keywords" content="blog software developer java kotlin aws amazon" />
@@ -41,7 +46,7 @@
   <meta name="author" content="Joery Vreijsen" />
   
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
-  <title> Archives</title>
+  <title> Contact</title>
   
     <!-- stylesheets list from config.yml -->
     
@@ -82,7 +87,7 @@
           
       
           
-            <li class="pure-menu-item actived"><a href="/archives" class="pure-menu-link">Archives</a></li>
+            <li class="pure-menu-item"><a href="/archives" class="pure-menu-link">Archives</a></li>
           
       
           
@@ -96,40 +101,71 @@
 
   <div class="container" id="content-outer">
     <div class="inner" id="content-inner">
+      <article class="post page" id="page">
+  
+    <header class="post-header text-center">
+      <h1 class="title">Connecting...</h1>
+
       
-
+        <div class="page-excerpt">
+          Use this form below if you want to get in personal contact with me, and i&#39;ll make sure your personal information is handled with the utter most care.
+        </div>
+      
+    </header>
   
-  
+  <div class="post-content">
     
-    
-    <section class="post page archives">
-      <h3 class="archive-year-wrap">
-        <a href="/archives/2021" class="archive-year">
-          2021
-        </a>
-      </h3>
-      <div class="archives">
-  
-  <div class="archive" >
-  <a class="post-go" href="/2021/12/28/building-a-multi-device-websocket-based-pubquiz/">
-    <div>
-      <span class="date">
-        12-28
-      </span>
-      <span class="slash">/</span>
-      Building a multi-device websocket based pubquiz
-    </div>
+        <form class="mb-5" method="post" id="contact-form">
 
-    <!--<div class="excerpt">-->
-      <!--Christmas; what a wonderfull time, wrapping paper in every store, lights and decorations on every corner what's not to like? Well here is the thing, I tend to get bored quite easily, which is why on this years family dinner; I tried something different!-->
-    <!--</div>-->
-  </a>
 
+<input type="text" class="form-control error" required="true" name="name" id="name" placeholder="Name">
+<input type="text" class="form-control error" required="true" name="email" id="email" placeholder="Email">
+<input type="text" class="form-control" required="true" name="subject" id="subject" placeholder="Subject">
+<textarea class="form-control" required="true" name="message" id="message" cols="30" rows="7" placeholder="Message"></textarea>
+
+<div style="display: flex; flex-direction: row; justify-content: space-between;">
+    <input style="display: flex; align-self: end;" type="submit" value="Send Message" class="btn btn-primary rounded-0 py-2 px-4">
+    <div style="display: flex; align-self: end;" class="g-recaptcha" data-sitekey="6Le3sd4dAAAAAF-bzYkrJggdMd0XuPtbo3EoL81_"></div>
 </div>
 
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
-  </div></section>
+<script>
+    let form = document.getElementById('contact-form');
 
+    form.onsubmit = (e) => {
+        e.preventDefault();
+
+        console.log(grecaptcha.getResponse())
+
+        $("input[type='submit']").val("Submitting...")
+        $("input[type='submit']").attr("disabled", true)
+      
+        $.ajax({
+            url: "https://script.google.com/macros/s/AKfycbxH8WG1LKFCKLxqnogx_STwozCKsSr2LTVsRvBHoUOOFKqDYWnLXd7pJIUMP8HXphaiBw/exec",
+            method: "POST",
+            dataType: "json",
+            data: $("#contact-form").serialize(),
+            success: function(response) {
+                
+                if(response.result == "success") {
+                    window.location.href = '/contact-success';
+                }
+                else {
+                    window.location.href = '/contact-error';
+                }
+            },
+            error: function() {
+                window.location.href = '/contact-error';
+            }
+        })
+    }
+</script>
+
+      
+  </div>
+</article>
     </div>
 
     
