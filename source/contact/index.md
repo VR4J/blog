@@ -13,9 +13,9 @@ date: 2021-12-31 09:28:48
 <input type="text" class="form-control" required="true" name="subject" id="subject" placeholder="Subject">
 <textarea class="form-control" required="true" name="message" id="message" cols="30" rows="7" placeholder="Message"></textarea>
 
-<div style="display: flex; flex-direction: row; justify-content: space-between;">
-    <input style="display: flex; align-self: end;" type="submit" value="Send Message" class="btn btn-primary rounded-0 py-2 px-4">
-    <div style="display: flex; align-self: end;" class="g-recaptcha" data-sitekey="6Le3sd4dAAAAAF-bzYkrJggdMd0XuPtbo3EoL81_"></div>
+<div class="control-container">
+    <input type="submit" value="Send Message" class="btn btn-primary rounded-0 py-2 px-4">
+    <div class="g-recaptcha" data-sitekey="6Le3sd4dAAAAAF-bzYkrJggdMd0XuPtbo3EoL81_"></div>
 </div>
 
 <div id="captcha-validation" style="display: none; flex-direction: row; justify-content: end;">
@@ -27,6 +27,11 @@ date: 2021-12-31 09:28:48
 
 <script>
     let form = document.getElementById('contact-form');
+    
+    if(screen.width <= 500) {
+        $(".g-recaptcha").attr("data-size", "compact")
+        grecaptcha.reset()
+    }
 
     form.onsubmit = (e) => {
         e.preventDefault();
