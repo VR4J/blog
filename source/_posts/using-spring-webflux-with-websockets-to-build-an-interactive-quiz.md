@@ -260,7 +260,7 @@ public class MessageListener {
 
 There you have it, the process of my own anti-boredom family pub quiz.
 
-As you can see I've left the actual quiz, and leaderboard functionality out of this blogpost, but the full implementation details are available in the [Github Repository](https://github.com/VR4J/quizzer-service).
+As you can see I've left the actual quiz, and leaderboard functionality out of this blogpost, but the full implementation details are available in the [backend repository](https://github.com/VR4J/quizzer-service) and [front-end repository](https://github.com/VR4J/quizzer-front-end) on Github.
 
 ### Demo
 
