@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>J. Vreijsen</title>
+  <icon>https://blog.vreijsenj.nl/favicon.ico</icon>
+  <subtitle>A blog about Software Development</subtitle>
+  <link href="https://blog.vreijsenj.nl/atom.xml" rel="self"/>
+  
+  <link href="https://blog.vreijsenj.nl/"/>
+  <updated>2022-01-02T10:22:09.781Z</updated>
+  <id>https://blog.vreijsenj.nl/</id>
+  
+  <author>
+    <name>Joery Vreijsen</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Using Spring Webflux with Websockets to build an interactive Quiz</title>
+    <link href="https://blog.vreijsenj.nl/2021/12/28/using-spring-webflux-with-websockets-to-build-an-interactive-quiz/"/>
+    <id>https://blog.vreijsenj.nl/2021/12/28/using-spring-webflux-with-websockets-to-build-an-interactive-quiz/</id>
+    <published>2021-12-28T11:58:30.000Z</published>
+    <updated>2022-01-02T10:22:09.781Z</updated>
+    
+    
+    <summary type="html">Christmas; what a wonderfull time, wrapping paper in every store, lights and decorations on every corner what&#39;s not to like? Well here is the thing, I tend to get bored quite easily, which is why on this years family dinner; I tried something different!</summary>
+    
+    
+    <content src="https://blog.vreijsenj.nl/images/family-pub-quiz-social-media-banner.jpg" type="image"/>
+    
+    
+    
+    <category term="Spring Boot" scheme="https://blog.vreijsenj.nl/tags/Spring-Boot/"/>
+    
+    <category term="Webflux" scheme="https://blog.vreijsenj.nl/tags/Webflux/"/>
+    
+    <category term="Java 17" scheme="https://blog.vreijsenj.nl/tags/Java-17/"/>
+    
+    <category term="Websockets" scheme="https://blog.vreijsenj.nl/tags/Websockets/"/>
+    
+  </entry>
+  
+</feed>
