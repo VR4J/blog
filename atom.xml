@@ -6,7 +6,7 @@
   <link href="https://blog.vreijsenj.nl/atom.xml" rel="self"/>
   
   <link href="https://blog.vreijsenj.nl/"/>
-  <updated>2022-01-02T10:22:09.781Z</updated>
+  <updated>2022-01-17T08:16:01.887Z</updated>
   <id>https://blog.vreijsenj.nl/</id>
   
   <author>
@@ -17,11 +17,34 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>What I love about Lombok and the builder pattern</title>
+    <link href="https://blog.vreijsenj.nl/2022/01/17/what-i-love-about-lombok-and-the-builder-pattern/"/>
+    <id>https://blog.vreijsenj.nl/2022/01/17/what-i-love-about-lombok-and-the-builder-pattern/</id>
+    <published>2022-01-17T09:15:00.000Z</published>
+    <updated>2022-01-17T08:16:01.887Z</updated>
+    
+    
+    <summary type="html">We all know I&#39;m a big fan of Lombok, but why? Well here are a few reasons that will make sure you start using it today!</summary>
+    
+    
+    <content src="https://blog.vreijsenj.nl/images/what-i-love-about-lombok-and-the-builder-pattern.jpg" type="image"/>
+    
+    
+    
+    <category term="Lombok" scheme="https://blog.vreijsenj.nl/tags/Lombok/"/>
+    
+    <category term="Jackson" scheme="https://blog.vreijsenj.nl/tags/Jackson/"/>
+    
+    <category term="Builders" scheme="https://blog.vreijsenj.nl/tags/Builders/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Using Spring Webflux with Websockets to build an interactive Quiz</title>
     <link href="https://blog.vreijsenj.nl/2021/12/28/using-spring-webflux-with-websockets-to-build-an-interactive-quiz/"/>
     <id>https://blog.vreijsenj.nl/2021/12/28/using-spring-webflux-with-websockets-to-build-an-interactive-quiz/</id>
     <published>2021-12-28T11:58:30.000Z</published>
-    <updated>2022-01-02T10:22:09.781Z</updated>
+    <updated>2022-01-17T08:16:01.887Z</updated>
     
     
     <summary type="html">Christmas; what a wonderfull time, wrapping paper in every store, lights and decorations on every corner what&#39;s not to like? Well here is the thing, I tend to get bored quite easily, which is why on this years family dinner; I tried something different!</summary>

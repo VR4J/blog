@@ -1,0 +1,364 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#202020"/>
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+  <meta name="title" content="What I love about Lombok and the builder pattern">
+
+  
+    <meta name="publish_date" property="og:publish_date" content="2022-01-17T09:15:00+00:00">
+    <meta property="article:published_time" content="2022-01-17" />
+
+    
+      
+        <meta property="article:tag" content="Lombok" />
+      
+        <meta property="article:tag" content="Jackson" />
+      
+        <meta property="article:tag" content="Builders" />
+      
+    
+  
+  
+  
+    <meta name="description" content="We all know I&#39;m a big fan of Lombok, but why? Well here are a few reasons that will make sure you start using it today!" />
+    <meta property="og:description" content="We all know I&#39;m a big fan of Lombok, but why? Well here are a few reasons that will make sure you start using it today!" />
+    <meta property="twitter:description" content="We all know I&#39;m a big fan of Lombok, but why? Well here are a few reasons that will make sure you start using it today!" />
+  
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://blog.vreijsenj.nl/2022/01/17/what-i-love-about-lombok-and-the-builder-pattern/" />
+  <meta property="og:title" content="What I love about Lombok and the builder pattern" />
+
+  
+    <meta property="twitter:image" content="https://blog.vreijsenj.nl/images/what-i-love-about-lombok-and-the-builder-pattern.jpg" />
+    <meta property="og:image" content="https://blog.vreijsenj.nl/images/what-i-love-about-lombok-and-the-builder-pattern.jpg" />
+  
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="https://blog.vreijsenj.nl/2022/01/17/what-i-love-about-lombok-and-the-builder-pattern/" />
+  <meta property="twitter:title" content="What I love about Lombok and the builder pattern" />
+  
+  
+    <meta name="keywords" content="Lombok,Jackson,Builders," />
+  
+
+  <meta name="author" content="Joery Vreijsen" />
+  
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <title> What I love about Lombok and the builder pattern</title>
+  
+    <!-- stylesheets list from config.yml -->
+    
+      <link rel="stylesheet" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css">
+    
+      <link rel="stylesheet" href="/css/xoxo.css">
+    
+      <link rel="stylesheet" href="/css/post.css">
+    
+      <link rel="stylesheet" href="/css/footer.css">
+    
+      <link rel="stylesheet" href="/css/contact.css">
+    
+  
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="J. Vreijsen" type="application/atom+xml">
+</head>
+
+
+<body>
+  <div class="nav-container">
+    <nav class="home-menu pure-menu pure-menu-horizontal">
+  <a class="pure-menu-heading" href="/">
+    <img class="avatar" src="https://blog.vreijsenj.nl/images/logo.jpeg">
+    <span class="title">J. Vreijsen</span>
+  </a>
+
+  <ul class="pure-menu-list clearfix">
+      
+          
+            <li class="pure-menu-item"><a href="/" class="pure-menu-link">Home</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/about" class="pure-menu-link">About</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/tags" class="pure-menu-link">Tags</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/archives" class="pure-menu-link">Archives</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/contact" class="pure-menu-link">Contact</a></li>
+          
+      
+  </ul>
+   
+</nav>
+  </div>
+
+  <div class="container" id="content-outer">
+    <div class="inner" id="content-inner">
+      <div class="post-container">
+  <article class="post" id="post">
+    <header class="post-header text-center">
+      <h1 class="title">
+        What I love about Lombok and the builder pattern
+      </h1>
+      <span>
+        
+        <time class="time" datetime="2022-01-17T09:15:00.000Z">
+        2022-01-17
+      </time>
+        
+      </span>
+      <span class="slash">/</span>
+      <span class="post-meta">
+      <span class="post-tags">
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Builders/" rel="tag">Builders</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Jackson/" rel="tag">Jackson</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Lombok/" rel="tag">Lombok</a></li></ul>
+      </span>
+    </span>
+      <span class="slash">/</span>
+      <span class="read">Reading Time: 8 Minute</span>
+    </header>
+
+    <div class="post-content">
+      <p>First things first, let’s quickly look at what Lombok exactly is, i’ll do one better; let’s look at how they describe it themselves at <a target="_blank" rel="noopener" href="https://projectlombok.org/">https://projectlombok.org</a>:</p>
+<blockquote>
+<p>Project Lombok is a java library that automatically plugs into your editor and build tools, spicing up your java.<br>Never write another getter or equals method again, with one annotation your class has a fully featured builder, Automate your logging variables, and much more.</p>
+</blockquote>
+<p>Exactly, the <strong>and much more</strong> is key in this little paragraph.</p>
+<h2 id="The-Builder-Pattern"><a href="#The-Builder-Pattern" class="headerlink" title="The Builder Pattern"></a>The Builder Pattern</h2><p>As you probably already know, the builder pattern is one of the design patterns used in object-oriented programming. It allows for a simple, easy to read and immutable way of contructing objects. Your object will have no setters, nor public constructors, rather a static builder class that allows for the creation of the object. By calling the builder class’ methods you can decide which properties you want to provide, and just leave out the ones you don’t care about.</p>
+<p>Well that’s all nice and theoretic but how does it look?</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BlogPost</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String title;</span><br><span class="line">    <span class="keyword">private</span> String author;</span><br><span class="line">    <span class="keyword">private</span> String category;</span><br><span class="line">    <span class="keyword">private</span> Instant created;</span><br><span class="line"></span><br><span class="line">    BlogPost(String title, String author, String category, Instant created) &#123;</span><br><span class="line">        <span class="keyword">this</span>.title = title;</span><br><span class="line">        <span class="keyword">this</span>.author = author;</span><br><span class="line">        <span class="keyword">this</span>.category = category;</span><br><span class="line">        <span class="keyword">this</span>.created = created;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> BlogPostBuilder <span class="title">builder</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> BlogPostBuilder();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">BlogPostBuilder</span> </span>&#123;</span><br><span class="line">        <span class="keyword">private</span> String title;</span><br><span class="line">        <span class="keyword">private</span> String author;</span><br><span class="line">        <span class="keyword">private</span> String category;</span><br><span class="line">        <span class="keyword">private</span> Instant created;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="title">BlogPostBuilder</span><span class="params">()</span> </span>&#123; &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> BlogPostBuilder <span class="title">title</span><span class="params">(String title)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.title = title;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> BlogPostBuilder <span class="title">author</span><span class="params">(String author)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.author = author;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> BlogPostBuilder <span class="title">category</span><span class="params">(String category)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.category = category;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> BlogPostBuilder <span class="title">created</span><span class="params">(Instant created)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.created = created;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> BlogPost <span class="title">build</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> BlogPost(title, author, category, published);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>We can now leverage our BlogPostBuilder to instantiate a BlogPost.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">BlogPost.builder()</span><br><span class="line">    .title(<span class="string">&quot;Very awesome blog post&quot;</span>)</span><br><span class="line">    .author(<span class="string">&quot;Joery Vreijsen&quot;</span>)</span><br><span class="line">    .category(<span class="string">&quot;Java&quot;</span>)</span><br><span class="line">    .created(Instant.now())</span><br><span class="line">    .build()</span><br></pre></td></tr></table></figure>
+
+<p>So hold on, where does Lombok come in? Well wouldn’t it be nice to get rid of all the boilerplate code in the BlogPost class, not having to create a builder method for every property you add? Let me introduce you to Lombok’s <code>@Builder</code> annotation.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Builder</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BlogPost</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String title;</span><br><span class="line">    <span class="keyword">private</span> String author;</span><br><span class="line">    <span class="keyword">private</span> String category;</span><br><span class="line">    <span class="keyword">private</span> Instant created;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Look at that, such a pretty class and since Lombok acts during the compilation process there is no runtime magic going on!</p>
+<h2 id="Builder-Defaults"><a href="#Builder-Defaults" class="headerlink" title="Builder Defaults"></a>Builder Defaults</h2><p>Another great feature of Lombok is the <code>@Builder.Default</code> annotation which allows you to specify a default value incase the caller didn’t provide a value when constructing the class. For example, lets say we want to default our <code>created</code> property to <em>now</em> when left out.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Builder</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BlogPost</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String title;</span><br><span class="line">    <span class="keyword">private</span> String author;</span><br><span class="line">    <span class="keyword">private</span> String category;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Builder</span>.Default</span><br><span class="line">    <span class="keyword">private</span> Instant created = Instant.now();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>With this annotation it creates an <code>if()</code> statement in the builders <code>build()</code> method, which checks whether the property was set, and if not set the default value.</p>
+<h2 id="Deserialisation-using-a-Builder"><a href="#Deserialisation-using-a-Builder" class="headerlink" title="Deserialisation using a Builder"></a>Deserialisation using a Builder</h2><p>Usually deserialisation is done by ether leveraging reflection (meh), using the constructors, or calling the setters. With the builder pattern the constructors and setters will not be there.. so good luck with that.</p>
+<p>Fortunately Jackson understand the builder pattern and we can annotate our class so Jackson knows its way around it.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Builder</span></span><br><span class="line"><span class="meta">@JsonDeserialize(builder = BlogPost.BlogPostBuilder.class)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BlogPost</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String title;</span><br><span class="line">    <span class="keyword">private</span> String author;</span><br><span class="line">    <span class="keyword">private</span> String category;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Builder</span>.Default</span><br><span class="line">    <span class="keyword">private</span> Instant created = Instant.now();</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@JsonPOJOBuilder(withPrefix = &quot;&quot;)</span></span><br><span class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">BlogPostBuilder</span> </span>&#123; &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Alright so let’s deep-dive a bit on this, as a lot is going on. First we added the <code>@JsonDeserialize()</code> annotation to let Jackson know where it can find our builder class, but unfortunately Jackson isn’t aligned with how Lombok thinks builder classes should be defined.</p>
+<p>Jackson (by default) assumes the builder class methods are prefixed with <code>with</code>. So it would think our builder looks something like this.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">BlogPost.builder()</span><br><span class="line">    .withTitle(<span class="string">&quot;Very awesome blog post&quot;</span>)</span><br><span class="line">    .withAuthor(<span class="string">&quot;Joery Vreijsen&quot;</span>)</span><br><span class="line">    .withCategory(<span class="string">&quot;Java&quot;</span>)</span><br><span class="line">    .withCreated(Instant.now())</span><br><span class="line">    .build()</span><br></pre></td></tr></table></figure>
+
+<p>That’s not the standard Lombok uses, so we need to annotate our builder to instruct Jackson to not assume any prefix. <em>Fun fact:</em> with Lombok you can still specify your own builder class, and it will just append it’s generated code to it. </p>
+<p>Alright so far, we only added Jackson annotations, so it’s not really Lombok that did us any favors here. Since Lombok targets to eliminate as much boilerplating as possible there is another annotation that we can use: <code>@Jacksonized</code>. With this annotation Lombok will basically add the Jackson code that we previously created ourselves.. nice right?</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Builder</span></span><br><span class="line"><span class="meta">@Jacksonized</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BlogPost</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String title;</span><br><span class="line">    <span class="keyword">private</span> String author;</span><br><span class="line">    <span class="keyword">private</span> String category;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Builder</span>.Default</span><br><span class="line">    <span class="keyword">private</span> Instant created = Instant.now();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>As with everything that is free, there is a disclaimer: The <code>@Jacksonized</code> annotation was added as an experimental feature in Lombok 1.18.14 which means that it could be removed in the future.</p>
+<h2 id="Using-collections-in-a-Builder"><a href="#Using-collections-in-a-Builder" class="headerlink" title="Using collections in a Builder"></a>Using collections in a Builder</h2><p>What if we have collections in our class? Like what if our BlogPost could have a Set of categories instead of just one. We can just change the type and Lombok will automatically provide us a builder method where we can pass in a Set of categories, but what if we would want to add them one by one?</p>
+<p>That’s where the <code>@Singular</code> annotation comes it; it allows you to provide just one category which the builder will then add to the Set of categories.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">BlogPost.builder()</span><br><span class="line">    .title(<span class="string">&quot;Very awesome blog post&quot;</span>)</span><br><span class="line">    .author(<span class="string">&quot;Joery Vreijsen&quot;</span>)</span><br><span class="line">    .category(<span class="string">&quot;Java&quot;</span>)</span><br><span class="line">    .category(<span class="string">&quot;Lombok&quot;</span>)</span><br><span class="line">    .created(Instant.now())</span><br><span class="line">    .build()</span><br></pre></td></tr></table></figure>
+
+<p>However there is one catch, ones you annotate the collection with <code>@Singular</code> the implementation of the <code>.categories()</code> method on the builder changes.<br>Instead of overwriting the whole collection, it will now use the <code>.add()</code> method of the collection, which can cause troubles if you first set an immutable collection and then try to add more items to it.</p>
+<h2 id="Changing-an-object-created-with-a-builder-class"><a href="#Changing-an-object-created-with-a-builder-class" class="headerlink" title="Changing an object created with a builder class"></a>Changing an object created with a builder class</h2><p>As we said at the start of this blogpost, the Builder pattern allows us to create immutable objects, which means we can’t change them later on. However what we can do is copy it, adjust it, and create a new object of it specifying the <code>@Builder(toBuilder = true)</code> property.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">BlogPost myFirstBlogPost = BlogPost.builder()</span><br><span class="line">    .title(<span class="string">&quot;Very awesome blog post&quot;</span>)</span><br><span class="line">    .author(<span class="string">&quot;Joery Vreijsen&quot;</span>)</span><br><span class="line">    .category(<span class="string">&quot;Java&quot;</span>)</span><br><span class="line">    .created(Instant.now())</span><br><span class="line">    .build()</span><br><span class="line"></span><br><span class="line">BlogPost mySecondBlogPost = myFirstBlogPost.toBuilder()</span><br><span class="line">    .title(<span class="string">&quot;Another very awesome blog post&quot;</span>)</span><br><span class="line">    .clearCategories()</span><br><span class="line">    .category(<span class="string">&quot;Lombok&quot;</span>)</span><br><span class="line">    .build()</span><br></pre></td></tr></table></figure>
+
+<p>Our second BlogPost now contains everything from our first BlogPost except for the title and categories. Note we use the <code>clearCategories()</code> method created by the <code>@Singular</code> annotations as the <code>category()</code> and <code>categories()</code> methods changed implementation to only add to the Set of categories.</p>
+<p>That’s it! Hope you enjoyed it, and see you next time.</p>
+
+    </div>
+  </article>
+  <div class="toc-container">
+    
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">Chapters</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#The-Builder-Pattern"><span class="toc-text">The Builder Pattern</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Builder-Defaults"><span class="toc-text">Builder Defaults</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Deserialisation-using-a-Builder"><span class="toc-text">Deserialisation using a Builder</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Using-collections-in-a-Builder"><span class="toc-text">Using collections in a Builder</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Changing-an-object-created-with-a-builder-class"><span class="toc-text">Changing an object created with a builder class</span></a></li></ol>
+  </div>
+
+
+  </div>
+</div>
+<div class="copyright">
+
+</div>
+<div class="share" style="width: 100%;">
+  
+</div>
+
+  
+    <!-- <div class="post-nav">
+      <div class="post-nav-item post-nav-next">
+        
+          <span>〈 </span>
+          <a href="/2021/12/28/using-spring-webflux-with-websockets-to-build-an-interactive-quiz/" rel="next" title="Using Spring Webflux with Websockets to build an interactive Quiz">
+          Using Spring Webflux with Websockets to build an interactive Quiz
+          </a>
+        
+      </div>
+  
+      <div class="post-nav-item post-nav-prev">
+          
+      </div>
+    </div> -->
+  
+
+
+    </div>
+
+    
+
+  </div>
+  <footer class="footer text-center">
+    <div id="bottom-inner">
+        <a class="bottom-item" href="/">Home</a> |
+        <a class="bottom-item" href="/archives">Blog</a> |
+        <a class="bottom-item" href="https://github.com/VR4J" target="_blank">GitHub</a> |
+        <a class="bottom-item" href="https://hexo.io" target="_blank">Powered by hexo</a>
+        <span class="bottom-item desktop-only">Somehow liking my gibberish? Use the <a class="brave" href="https://brave.com" target="_blank">Brave Browser</a> to tip me, or feed my caffeine addiction by <a class="buymeacoffee" href="https://www.buymeacoffee.com/vreijsenj" target="_blank"> buying me a Monster</a>.</span>
+    </div>
+</footer>
+  
+
+<script>
+  (function(window, document, undefined) {
+
+    var timer = null;
+
+    function returnTop() {
+      cancelAnimationFrame(timer);
+      timer = requestAnimationFrame(function fn() {
+        var oTop = document.body.scrollTop || document.documentElement.scrollTop;
+        if (oTop > 0) {
+          document.body.scrollTop = document.documentElement.scrollTop = oTop - 50;
+          timer = requestAnimationFrame(fn);
+        } else {
+          cancelAnimationFrame(timer);
+        }
+      });
+    }
+
+    var hearts = [];
+    window.requestAnimationFrame = (function() {
+      return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function(callback) {
+          setTimeout(callback, 1000 / 60);
+        }
+    })();
+    init();
+
+    function init() {
+      css(".heart{z-index:9999;width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: absolute;}.heart:after{top: -5px;}.heart:before{left: -5px;}");
+      attachEvent();
+      gameloop();
+      addMenuEvent();
+    }
+
+    function gameloop() {
+      for (var i = 0; i < hearts.length; i++) {
+        if (hearts[i].alpha <= 0) {
+          document.body.removeChild(hearts[i].el);
+          hearts.splice(i, 1);
+          continue;
+        }
+        hearts[i].y--;
+        hearts[i].scale += 0.004;
+        hearts[i].alpha -= 0.013;
+        hearts[i].el.style.cssText = "left:" + hearts[i].x + "px;top:" + hearts[i].y + "px;opacity:" + hearts[i].alpha + ";transform:scale(" + hearts[i].scale + "," + hearts[i].scale + ") rotate(45deg);background:" + hearts[i].color;
+      }
+      requestAnimationFrame(gameloop);
+    }
+
+    /**
+     * 给logo设置点击事件
+     * 
+     * - 回到顶部
+     * - 出现爱心
+     */
+    function attachEvent() {
+      var old = typeof window.onclick === "function" && window.onclick;
+      var logo = document.getElementById("logo");
+      if (logo) {
+        logo.onclick = function(event) {
+          returnTop();
+          old && old();
+          createHeart(event);
+        }
+      }
+      
+    }
+
+    function createHeart(event) {
+      var d = document.createElement("div");
+      d.className = "heart";
+      hearts.push({
+        el: d,
+        x: event.clientX - 5,
+        y: event.clientY - 5,
+        scale: 1,
+        alpha: 1,
+        color: randomColor()
+      });
+      document.body.appendChild(d);
+    }
+
+    function css(css) {
+      var style = document.createElement("style");
+      style.type = "text/css";
+      try {
+        style.appendChild(document.createTextNode(css));
+      } catch (ex) {
+        style.styleSheet.cssText = css;
+      }
+      document.getElementsByTagName('head')[0].appendChild(style);
+    }
+
+    function randomColor() {
+      // return "rgb(" + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + ")";
+      return "#F44336";
+    }
+
+    function addMenuEvent() {
+      var menu = document.getElementById('menu-main-post');
+      if (menu) {
+        var toc = document.getElementById('toc');
+        if (toc) {
+          menu.onclick = function() {
+            if (toc) {
+              if (toc.style.display == 'block') {
+                toc.style.display = 'none';
+              } else {
+                toc.style.display = 'block';
+              }
+            }
+          };
+        } else {
+          menu.style.display = 'none';
+        }
+      }
+    }
+
+  })(window, document);
+</script>
+
+  
+
+
+
+</body>
+</html>
