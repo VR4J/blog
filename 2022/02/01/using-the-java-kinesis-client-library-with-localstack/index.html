@@ -1,0 +1,375 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#202020"/>
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+  <meta name="title" content="Using the Java Kinesis Client Library (KCL) with localstack">
+
+  
+    <meta name="publish_date" property="og:publish_date" content="2022-02-01T10:10:42+00:00">
+    <meta property="article:published_time" content="2022-02-01" />
+
+    
+      
+        <meta property="article:tag" content="Spring Boot" />
+      
+        <meta property="article:tag" content="Java 17" />
+      
+        <meta property="article:tag" content="AWS" />
+      
+        <meta property="article:tag" content="Kinesis" />
+      
+        <meta property="article:tag" content="DynamoDB" />
+      
+        <meta property="article:tag" content="LocalStack" />
+      
+    
+  
+  
+  
+    <meta name="description" content="Read or heard alot about Kinesis Data Streams, and eager to know how to actually use it? Come along and join me in this magical adventure of using the Kinesis Client Library and running it locally with LocalStack!" />
+    <meta property="og:description" content="Read or heard alot about Kinesis Data Streams, and eager to know how to actually use it? Come along and join me in this magical adventure of using the Kinesis Client Library and running it locally with LocalStack!" />
+    <meta property="twitter:description" content="Read or heard alot about Kinesis Data Streams, and eager to know how to actually use it? Come along and join me in this magical adventure of using the Kinesis Client Library and running it locally with LocalStack!" />
+  
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://blog.vreijsenj.nl/2022/02/01/using-the-java-kinesis-client-library-with-localstack/" />
+  <meta property="og:title" content="Using the Java Kinesis Client Library (KCL) with localstack" />
+
+  
+    <meta property="twitter:image" content="https://blog.vreijsenj.nl/images/using-the-java-kinesis-client-library-kcl-with-localstack-social.jpg" />
+    <meta property="og:image" content="https://blog.vreijsenj.nl/images/using-the-java-kinesis-client-library-kcl-with-localstack-social.jpg" />
+  
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="https://blog.vreijsenj.nl/2022/02/01/using-the-java-kinesis-client-library-with-localstack/" />
+  <meta property="twitter:title" content="Using the Java Kinesis Client Library (KCL) with localstack" />
+  
+  
+    <meta name="keywords" content="Spring Boot,Java 17,AWS,Kinesis,DynamoDB,LocalStack," />
+  
+
+  <meta name="author" content="Joery Vreijsen" />
+  
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <title> Using the Java Kinesis Client Library (KCL) with localstack</title>
+  
+    <!-- stylesheets list from config.yml -->
+    
+      <link rel="stylesheet" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css">
+    
+      <link rel="stylesheet" href="/css/xoxo.css">
+    
+      <link rel="stylesheet" href="/css/post.css">
+    
+      <link rel="stylesheet" href="/css/footer.css">
+    
+      <link rel="stylesheet" href="/css/contact.css">
+    
+  
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="J. Vreijsen" type="application/atom+xml">
+</head>
+
+
+<body>
+  <div class="nav-container">
+    <nav class="home-menu pure-menu pure-menu-horizontal">
+  <a class="pure-menu-heading" href="/">
+    <img class="avatar" src="https://blog.vreijsenj.nl/images/logo.jpeg">
+    <span class="title">J. Vreijsen</span>
+  </a>
+
+  <ul class="pure-menu-list clearfix">
+      
+          
+            <li class="pure-menu-item"><a href="/" class="pure-menu-link">Home</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/about" class="pure-menu-link">About</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/tags" class="pure-menu-link">Tags</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/archives" class="pure-menu-link">Archives</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/contact" class="pure-menu-link">Contact</a></li>
+          
+      
+  </ul>
+   
+</nav>
+  </div>
+
+  <div class="container" id="content-outer">
+    <div class="inner" id="content-inner">
+      <div class="post-container">
+  <article class="post" id="post">
+    <header class="post-header text-center">
+      <h1 class="title">
+        Using the Java Kinesis Client Library (KCL) with localstack
+      </h1>
+      <span>
+        
+        <time class="time" datetime="2022-02-01T10:10:42.130Z">
+        2022-02-01
+      </time>
+        
+      </span>
+      <span class="slash">/</span>
+      <span class="post-meta">
+      <span class="post-tags">
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/AWS/" rel="tag">AWS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DynamoDB/" rel="tag">DynamoDB</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java-17/" rel="tag">Java 17</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Kinesis/" rel="tag">Kinesis</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LocalStack/" rel="tag">LocalStack</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Boot/" rel="tag">Spring Boot</a></li></ul>
+      </span>
+    </span>
+      <span class="slash">/</span>
+      <span class="read">Reading Time: 10 Minute</span>
+    </header>
+
+    <div class="post-content">
+      <p>Wait wait, hear me out: Consuming a multi-sharded kinesis stream by implementing the Java Kinesis Client Library, and to top it off, use <a target="_blank" rel="noopener" href="https://localstack.cloud/">localstack</a> to run our code locally. Interested? Great, let’s go!</p>
+<p>Only interested in the result? Here is the <a target="_blank" rel="noopener" href="https://github.com/VR4J/java-kinesis-client-consumer">Github Repository</a>.</p>
+<h2 id="Kinesis-Data-Streams"><a href="#Kinesis-Data-Streams" class="headerlink" title="Kinesis Data Streams"></a>Kinesis Data Streams</h2><p>Kinesis Data Streams is one of the many, many, managed services provided by Amazon Web Services (AWS). Kinesis streams can be <em>sharded</em> based on a partition key, allowing multiple consumers to each consume a specific shard in parallel.</p>
+<p>Sharding is a way of scaling the consumers on a stream, while still maintaining the order of the messages based on the partition key.<br><img src="/images/sharding-principle.png" /></p>
+<p>With this example, you can see that message A-1 can be handled in parallel of message B-1, but messages A-1 and A-2 are always processed in order by the same consumer.</p>
+<h2 id="Configuring-localstack"><a href="#Configuring-localstack" class="headerlink" title="Configuring localstack"></a>Configuring localstack</h2><p>Usually we would setup the Kinesis Stream using CloudFormation, Terraform, or the AWS Console itself, but since we want to be able to test our code locally we will use <a target="_blank" rel="noopener" href="https://localstack.cloud/">localstack</a> instead.</p>
+<p>Localstack is “a fully functional local cloud stack”, which means it gives us a local implementation of almost every AWS service. Luckily we don’t need <em>all</em> the services provided by Amazon, but only Kinesis (obviously), DynamoDB and Cloudwatch.</p>
+<p>We need DynamoDB as the Kinesis Client Library (KCL) uses a DynamoDB table to store the checkpoints of all shards. Checkpoints can be considered the state of the client, containing which application has the lease on which shard, and at which sequencenumber the consumer is currently processing the data.</p>
+<p>We need CloudWatch as the Kinesis Client Library (KCL) provides metrics to monitor our application.</p>
+<h3 id="Setup"><a href="#Setup" class="headerlink" title="Setup"></a>Setup</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ pip install localstack</span><br><span class="line">$ pip install awscli-local</span><br></pre></td></tr></table></figure>
+
+<h3 id="Running"><a href="#Running" class="headerlink" title="Running"></a>Running</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$ SERVICES=kinesis,dynambodb,cloudwatch localstack start -d </span><br><span class="line"></span><br><span class="line">     __                     _______ __             __</span><br><span class="line">    / /   ____  _________ _/ / ___// /_____ ______/ /__</span><br><span class="line">   / /   / __ \/ ___/ __ `/ /\__ \/ __/ __ `/ ___/ //_/</span><br><span class="line">  / /___/ /_/ / /__/ /_/ / /___/ / /_/ /_/ / /__/ ,&lt;</span><br><span class="line"> /_____/\____/\___/\__,_/_//____/\__/\__,_/\___/_/|_|</span><br><span class="line"></span><br><span class="line"> 💻 LocalStack CLI 0.13.3.3</span><br><span class="line"></span><br><span class="line">[20:22:20] starting LocalStack <span class="keyword">in</span> Docker mode 🐳</span><br><span class="line">[20:22:21] detaching</span><br></pre></td></tr></table></figure>
+
+<p>Awesome, we can now interact with our local AWS services by using the awslocal cli and create our Kinesis stream.</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ awslocal kinesis create-stream --stream-name some-data-stream --shard-count 2</span><br></pre></td></tr></table></figure>
+
+<p>And that’s all we need, we have our localstack environment and we have our Kinesis data stream with two shards, time to get our hands dirty and build some actual code!</p>
+<h2 id="Setting-up-the-Kinesis-Client-Library"><a href="#Setting-up-the-Kinesis-Client-Library" class="headerlink" title="Setting up the Kinesis Client Library"></a>Setting up the Kinesis Client Library</h2><h3 id="Dependencies"><a href="#Dependencies" class="headerlink" title="Dependencies"></a>Dependencies</h3><p>Let’s start with the <strong>build.gradle</strong> file which lists all the dependencies we will need.</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">plugins &#123;</span><br><span class="line">	id <span class="string">&#x27;org.springframework.boot&#x27;</span> version <span class="string">&#x27;2.6.3&#x27;</span></span><br><span class="line">	id <span class="string">&#x27;io.spring.dependency-management&#x27;</span> version <span class="string">&#x27;1.0.11.RELEASE&#x27;</span></span><br><span class="line">	id <span class="string">&#x27;java&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">group = <span class="string">&#x27;com.vreijsen&#x27;</span></span><br><span class="line">version = <span class="string">&#x27;0.0.1-SNAPSHOT&#x27;</span></span><br><span class="line">sourceCompatibility = <span class="string">&#x27;17&#x27;</span></span><br><span class="line"></span><br><span class="line">configurations &#123;</span><br><span class="line">	compileOnly &#123;</span><br><span class="line">		extendsFrom annotationProcessor</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">repositories &#123;</span><br><span class="line">	mavenCentral()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">tasks.withType(JavaCompile) &#123;</span><br><span class="line">	options.compilerArgs += <span class="string">&quot;--enable-preview&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">dependencies &#123;</span><br><span class="line">	annotationProcessor(<span class="string">&quot;org.springframework.boot:spring-boot-configuration-processor&quot;</span>)</span><br><span class="line"></span><br><span class="line">	implementation(<span class="string">&quot;org.springframework.boot:spring-boot-starter-webflux&quot;</span>)</span><br><span class="line">	implementation(<span class="string">&#x27;org.springframework:spring-context&#x27;</span>)</span><br><span class="line"></span><br><span class="line">	implementation(<span class="string">&quot;javax.servlet:javax.servlet-api:4.0.1&quot;</span>)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Kinesis Client Library</span></span><br><span class="line">	implementation(<span class="string">&#x27;software.amazon.kinesis:amazon-kinesis-client:2.3.10&#x27;</span>)</span><br><span class="line"></span><br><span class="line">	compileOnly <span class="string">&#x27;org.projectlombok:lombok:1.18.20&#x27;</span></span><br><span class="line">	annotationProcessor <span class="string">&#x27;org.projectlombok:lombok:1.18.20&#x27;</span></span><br><span class="line">	testImplementation <span class="string">&#x27;org.springframework.boot:spring-boot-starter-test&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">tasks.named(<span class="string">&#x27;test&#x27;</span>) &#123;</span><br><span class="line">	useJUnitPlatform()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Configuration"><a href="#Configuration" class="headerlink" title="Configuration"></a>Configuration</h3><p>We’ll have to instruct our application which Kinesis Data Stream to consume, and in which region this stream lives. We can default the region to <code>US_EAST_1</code> since that is the default region used by localstack.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.vreijsen.consumer.configuration;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@ConfigurationProperties(prefix = &quot;kinesis&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">KinesisConfigurationProperties</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    String stream;</span><br><span class="line">    Region region = Region.US_EAST_1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Our <strong>application.yaml</strong> can then contain the following.</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">kinesis:</span></span><br><span class="line">  <span class="attr">stream:</span> <span class="string">&quot;some-data-stream&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>Since we’ll be using three AWS services, we have to define a <em>client</em> bean for each one of them.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Profile(&quot;localstack&quot;)</span></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@RequiredArgsConstructor</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LocalStackClientConfiguration</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> URI LOCALSTACK_URI = URI.create(<span class="string">&quot;http://localhost:4566&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> KinesisConfigurationProperties properties;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> KinesisAsyncClient <span class="title">kinesisAsyncClient</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> KinesisClientUtil.createKinesisAsyncClient(</span><br><span class="line">                KinesisAsyncClient.builder()</span><br><span class="line">                        .endpointOverride(LOCALSTACK_URI)</span><br><span class="line">                        .region(properties.getRegion())</span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> DynamoDbAsyncClient <span class="title">dynamoAsyncClient</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> DynamoDbAsyncClient.builder()</span><br><span class="line">                .endpointOverride(LOCALSTACK_URI)</span><br><span class="line">                .region(properties.getRegion())</span><br><span class="line">                .build();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> CloudWatchAsyncClient <span class="title">cloudWatchAsyncClient</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> CloudWatchAsyncClient.builder()</span><br><span class="line">                .endpointOverride(LOCALSTACK_URI)</span><br><span class="line">                .region(properties.getRegion())</span><br><span class="line">                .build();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>You can see we annotated the class with <code>@Profile(&quot;localstack&quot;)</code> as it overrides the endpoints on the clients to point to our localstack environment running on our own machine.</p>
+<p>We can define the same class but without the endpoint overrides and annotate it with <code>@Profile(&quot;!localstack&quot;)</code> to connect to the actual AWS cloud when not running with the localstack profile.</p>
+<h3 id="Kinesis-Scheduler"><a href="#Kinesis-Scheduler" class="headerlink" title="Kinesis Scheduler"></a>Kinesis Scheduler</h3><p>The <strong>KinesisScheduler</strong> is the heart of the library and will do all our Kinesis magic. We can provide the clients that we just setup, but most importantly provide a <strong>ShardRecordProcessor</strong> which will be created for every shard the application holds the lease of. </p>
+<p>When implementing the <strong>ShardRecordProcessor</strong> we have a few methods that we can override to adjust the behaviour to our specific needs. </p>
+<p>The most important method to override is the <code>processRecords(ProcessRecordsInput input)</code> as it is the entry point for all data coming in from that shard. For our demo, we’ll just log every record that comes in.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">KinesisRecordProcessor</span> <span class="keyword">implements</span> <span class="title">ShardRecordProcessor</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="comment">/* Called when initializing the record processor; can be used to set some MDC properties before receiving data. */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">initialize</span><span class="params">(InitializationInput input)</span> </span>&#123; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">processRecords</span><span class="params">(ProcessRecordsInput input)</span> </span>&#123;</span><br><span class="line">        input.records().forEach(record -&gt; log.info(<span class="string">&quot;Received Kinesis message: &#123;&#125;.&quot;</span>, record));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="comment">/* Called when the lease has been lost to another consumer; can be used to remove some MDC properties. */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">leaseLost</span><span class="params">(LeaseLostInput input)</span> </span>&#123; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="comment">/* Called when the last message of the shard has been processed, and we need to persist our checkpoint. */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">shardEnded</span><span class="params">(ShardEndedInput input)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            input.checkpointer().checkpoint();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InvalidStateException | ShutdownException e) &#123;</span><br><span class="line">            log.error(<span class="string">&quot;Exception while checkpointing at shard end. Giving up.&quot;</span>, e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="comment">/* Called when the app is shutting down, so we need to persist our current checkpoint. */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">shutdownRequested</span><span class="params">(ShutdownRequestedInput input)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            input.checkpointer().checkpoint();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InvalidStateException | ShutdownException e) &#123;</span><br><span class="line">            log.error(<span class="string">&quot;Exception while checkpointing at shutdown. Giving up.&quot;</span>, e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Alright now that we have a <strong>ShardRecordProcessor</strong> we can initialize the Kinesis Scheduler.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@RequiredArgsConstructor</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">KinesisConfiguration</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> KinesisConfigurationProperties properties;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Scheduler <span class="title">scheduler</span><span class="params">(KinesisAsyncClient kinesis, DynamoDbAsyncClient dynamodb, CloudWatchAsyncClient cloudwatch)</span> </span>&#123;</span><br><span class="line">        ConfigsBuilder configs = <span class="keyword">new</span> ConfigsBuilder(properties.getStream(), properties.getStream(), kinesis, dynamodb, cloudwatch,</span><br><span class="line">                UUID.randomUUID().toString(),</span><br><span class="line">                KinesisRecordProcessor::<span class="keyword">new</span></span><br><span class="line">        );</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Scheduler(</span><br><span class="line">                configs.checkpointConfig(),</span><br><span class="line">                configs.coordinatorConfig(),</span><br><span class="line">                configs.leaseManagementConfig(),</span><br><span class="line">                configs.lifecycleConfig(),</span><br><span class="line">                configs.metricsConfig(),</span><br><span class="line">                configs.processorConfig(),</span><br><span class="line">                configs.retrievalConfig().retrievalSpecificConfig(</span><br><span class="line">                        <span class="keyword">new</span> PollingConfig(properties.getStream(), kinesis)</span><br><span class="line">                )</span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>With this scheduler we can now create our deamon thread and start consuming!</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@RequiredArgsConstructor</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">KinesisRunner</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Scheduler scheduler;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@PostConstruct</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Thread schedulerThread = <span class="keyword">new</span> Thread(scheduler);</span><br><span class="line">        schedulerThread.setDaemon(<span class="keyword">true</span>);</span><br><span class="line">        schedulerThread.start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Ofcourse to be able to consume data we’ll first need to send some data to the Kinesis stream. Keep in mind the <code>Data</code> property should be Base64 encoded.</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awslocal kinesis put-records --stream-name some-data-stream --records Data=SGVsbG8gV29ybGQ=,PartitionKey=partition-1</span><br></pre></td></tr></table></figure>
+
+<p>When we run our application using the <strong>localstack profile</strong> we should see the following logs.</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">INFO : Received Kinesis message: KinesisClientRecord(sequenceNumber=49626058596308151669577377721366592164732241681909284866, approximateArrivalTimestamp=2022-01-23T12:24:27.560Z, data=java.nio.HeapByteBufferR[pos=0 lim=11 <span class="built_in">cap</span>=11], partitionKey=partition-1, encryptionType=NONE, subSequenceNumber=0, explicitHashKey=null, aggregated=<span class="literal">false</span>, schema=null).</span><br></pre></td></tr></table></figure>
+
+<p>Hooray! We’ve successfully implemented the Kinesis Client Library, and made it run locally using our own localstack environment 🎉</p>
+<p>Want to see the full application? Here is the <a target="_blank" rel="noopener" href="https://github.com/VR4J/java-kinesis-client-consumer">Github Repository</a>.</p>
+
+    </div>
+  </article>
+  <div class="toc-container">
+    
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">Chapters</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Kinesis-Data-Streams"><span class="toc-text">Kinesis Data Streams</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Configuring-localstack"><span class="toc-text">Configuring localstack</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Setup"><span class="toc-text">Setup</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Running"><span class="toc-text">Running</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Setting-up-the-Kinesis-Client-Library"><span class="toc-text">Setting up the Kinesis Client Library</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Dependencies"><span class="toc-text">Dependencies</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Configuration"><span class="toc-text">Configuration</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Kinesis-Scheduler"><span class="toc-text">Kinesis Scheduler</span></a></li></ol></li></ol>
+  </div>
+
+
+  </div>
+</div>
+<div class="copyright">
+
+</div>
+<div class="share" style="width: 100%;">
+  
+</div>
+
+  
+    <!-- <div class="post-nav">
+      <div class="post-nav-item post-nav-next">
+        
+          <span>〈 </span>
+          <a href="/2022/01/17/what-i-love-about-lombok-and-the-builder-pattern/" rel="next" title="What I love about Lombok and the builder pattern">
+          What I love about Lombok and the builder pattern
+          </a>
+        
+      </div>
+  
+      <div class="post-nav-item post-nav-prev">
+          
+      </div>
+    </div> -->
+  
+
+
+    </div>
+
+    
+
+  </div>
+  <footer class="footer text-center">
+    <div id="bottom-inner">
+        <a class="bottom-item" href="/">Home</a> |
+        <a class="bottom-item" href="/archives">Blog</a> |
+        <a class="bottom-item" href="https://github.com/VR4J" target="_blank">GitHub</a> |
+        <a class="bottom-item" href="https://hexo.io" target="_blank">Powered by hexo</a>
+        <span class="bottom-item desktop-only">Somehow liking my gibberish? Use the <a class="brave" href="https://brave.com" target="_blank">Brave Browser</a> to tip me, or feed my caffeine addiction by <a class="buymeacoffee" href="https://www.buymeacoffee.com/vreijsenj" target="_blank"> buying me a Monster</a>.</span>
+    </div>
+</footer>
+  
+
+<script>
+  (function(window, document, undefined) {
+
+    var timer = null;
+
+    function returnTop() {
+      cancelAnimationFrame(timer);
+      timer = requestAnimationFrame(function fn() {
+        var oTop = document.body.scrollTop || document.documentElement.scrollTop;
+        if (oTop > 0) {
+          document.body.scrollTop = document.documentElement.scrollTop = oTop - 50;
+          timer = requestAnimationFrame(fn);
+        } else {
+          cancelAnimationFrame(timer);
+        }
+      });
+    }
+
+    var hearts = [];
+    window.requestAnimationFrame = (function() {
+      return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function(callback) {
+          setTimeout(callback, 1000 / 60);
+        }
+    })();
+    init();
+
+    function init() {
+      css(".heart{z-index:9999;width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: absolute;}.heart:after{top: -5px;}.heart:before{left: -5px;}");
+      attachEvent();
+      gameloop();
+      addMenuEvent();
+    }
+
+    function gameloop() {
+      for (var i = 0; i < hearts.length; i++) {
+        if (hearts[i].alpha <= 0) {
+          document.body.removeChild(hearts[i].el);
+          hearts.splice(i, 1);
+          continue;
+        }
+        hearts[i].y--;
+        hearts[i].scale += 0.004;
+        hearts[i].alpha -= 0.013;
+        hearts[i].el.style.cssText = "left:" + hearts[i].x + "px;top:" + hearts[i].y + "px;opacity:" + hearts[i].alpha + ";transform:scale(" + hearts[i].scale + "," + hearts[i].scale + ") rotate(45deg);background:" + hearts[i].color;
+      }
+      requestAnimationFrame(gameloop);
+    }
+
+    /**
+     * 给logo设置点击事件
+     * 
+     * - 回到顶部
+     * - 出现爱心
+     */
+    function attachEvent() {
+      var old = typeof window.onclick === "function" && window.onclick;
+      var logo = document.getElementById("logo");
+      if (logo) {
+        logo.onclick = function(event) {
+          returnTop();
+          old && old();
+          createHeart(event);
+        }
+      }
+      
+    }
+
+    function createHeart(event) {
+      var d = document.createElement("div");
+      d.className = "heart";
+      hearts.push({
+        el: d,
+        x: event.clientX - 5,
+        y: event.clientY - 5,
+        scale: 1,
+        alpha: 1,
+        color: randomColor()
+      });
+      document.body.appendChild(d);
+    }
+
+    function css(css) {
+      var style = document.createElement("style");
+      style.type = "text/css";
+      try {
+        style.appendChild(document.createTextNode(css));
+      } catch (ex) {
+        style.styleSheet.cssText = css;
+      }
+      document.getElementsByTagName('head')[0].appendChild(style);
+    }
+
+    function randomColor() {
+      // return "rgb(" + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + ")";
+      return "#F44336";
+    }
+
+    function addMenuEvent() {
+      var menu = document.getElementById('menu-main-post');
+      if (menu) {
+        var toc = document.getElementById('toc');
+        if (toc) {
+          menu.onclick = function() {
+            if (toc) {
+              if (toc.style.display == 'block') {
+                toc.style.display = 'none';
+              } else {
+                toc.style.display = 'block';
+              }
+            }
+          };
+        } else {
+          menu.style.display = 'none';
+        }
+      }
+    }
+
+  })(window, document);
+</script>
+
+  
+
+
+
+</body>
+</html>

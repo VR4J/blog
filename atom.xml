@@ -6,7 +6,7 @@
   <link href="https://blog.vreijsenj.nl/atom.xml" rel="self"/>
   
   <link href="https://blog.vreijsenj.nl/"/>
-  <updated>2022-01-22T11:26:11.760Z</updated>
+  <updated>2022-02-01T10:10:42.130Z</updated>
   <id>https://blog.vreijsenj.nl/</id>
   
   <author>
@@ -17,11 +17,40 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Using the Java Kinesis Client Library (KCL) with localstack</title>
+    <link href="https://blog.vreijsenj.nl/2022/02/01/using-the-java-kinesis-client-library-with-localstack/"/>
+    <id>https://blog.vreijsenj.nl/2022/02/01/using-the-java-kinesis-client-library-with-localstack/</id>
+    <published>2022-02-01T10:10:42.130Z</published>
+    <updated>2022-02-01T10:10:42.130Z</updated>
+    
+    
+    <summary type="html">Read or heard alot about Kinesis Data Streams, and eager to know how to actually use it? Come along and join me in this magical adventure of using the Kinesis Client Library and running it locally with LocalStack!</summary>
+    
+    
+    <content src="https://blog.vreijsenj.nl/images/using-the-java-kinesis-client-library-kcl-with-localstack-social.jpg" type="image"/>
+    
+    
+    
+    <category term="Spring Boot" scheme="https://blog.vreijsenj.nl/tags/Spring-Boot/"/>
+    
+    <category term="Java 17" scheme="https://blog.vreijsenj.nl/tags/Java-17/"/>
+    
+    <category term="AWS" scheme="https://blog.vreijsenj.nl/tags/AWS/"/>
+    
+    <category term="Kinesis" scheme="https://blog.vreijsenj.nl/tags/Kinesis/"/>
+    
+    <category term="DynamoDB" scheme="https://blog.vreijsenj.nl/tags/DynamoDB/"/>
+    
+    <category term="LocalStack" scheme="https://blog.vreijsenj.nl/tags/LocalStack/"/>
+    
+  </entry>
+  
+  <entry>
     <title>What I love about Lombok and the builder pattern</title>
     <link href="https://blog.vreijsenj.nl/2022/01/17/what-i-love-about-lombok-and-the-builder-pattern/"/>
     <id>https://blog.vreijsenj.nl/2022/01/17/what-i-love-about-lombok-and-the-builder-pattern/</id>
     <published>2022-01-17T09:15:00.000Z</published>
-    <updated>2022-01-22T11:26:11.760Z</updated>
+    <updated>2022-02-01T10:10:42.130Z</updated>
     
     
     <summary type="html">We all know I&#39;m a big fan of Lombok, but why? Well here are a few reasons that will make sure you start using it today!</summary>
@@ -44,7 +73,7 @@
     <link href="https://blog.vreijsenj.nl/2021/12/28/using-spring-webflux-with-websockets-to-build-an-interactive-quiz/"/>
     <id>https://blog.vreijsenj.nl/2021/12/28/using-spring-webflux-with-websockets-to-build-an-interactive-quiz/</id>
     <published>2021-12-28T11:58:30.000Z</published>
-    <updated>2022-01-22T11:26:11.760Z</updated>
+    <updated>2022-02-01T10:10:42.130Z</updated>
     
     
     <summary type="html">Christmas; what a wonderfull time, wrapping paper in every store, lights and decorations on every corner what&#39;s not to like? Well here is the thing, I tend to get bored quite easily, which is why on this years family dinner; I tried something different!</summary>
