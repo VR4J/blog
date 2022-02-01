@@ -6,7 +6,7 @@
   <link href="https://blog.vreijsenj.nl/atom.xml" rel="self"/>
   
   <link href="https://blog.vreijsenj.nl/"/>
-  <updated>2022-02-01T10:10:42.130Z</updated>
+  <updated>2022-02-01T10:13:25.967Z</updated>
   <id>https://blog.vreijsenj.nl/</id>
   
   <author>
@@ -20,8 +20,8 @@
     <title>Using the Java Kinesis Client Library (KCL) with localstack</title>
     <link href="https://blog.vreijsenj.nl/2022/02/01/using-the-java-kinesis-client-library-with-localstack/"/>
     <id>https://blog.vreijsenj.nl/2022/02/01/using-the-java-kinesis-client-library-with-localstack/</id>
-    <published>2022-02-01T10:10:42.130Z</published>
-    <updated>2022-02-01T10:10:42.130Z</updated>
+    <published>2022-02-01T10:13:25.967Z</published>
+    <updated>2022-02-01T10:13:25.967Z</updated>
     
     
     <summary type="html">Read or heard alot about Kinesis Data Streams, and eager to know how to actually use it? Come along and join me in this magical adventure of using the Kinesis Client Library and running it locally with LocalStack!</summary>
@@ -50,7 +50,7 @@
     <link href="https://blog.vreijsenj.nl/2022/01/17/what-i-love-about-lombok-and-the-builder-pattern/"/>
     <id>https://blog.vreijsenj.nl/2022/01/17/what-i-love-about-lombok-and-the-builder-pattern/</id>
     <published>2022-01-17T09:15:00.000Z</published>
-    <updated>2022-02-01T10:10:42.130Z</updated>
+    <updated>2022-02-01T10:13:25.967Z</updated>
     
     
     <summary type="html">We all know I&#39;m a big fan of Lombok, but why? Well here are a few reasons that will make sure you start using it today!</summary>
@@ -73,7 +73,7 @@
     <link href="https://blog.vreijsenj.nl/2021/12/28/using-spring-webflux-with-websockets-to-build-an-interactive-quiz/"/>
     <id>https://blog.vreijsenj.nl/2021/12/28/using-spring-webflux-with-websockets-to-build-an-interactive-quiz/</id>
     <published>2021-12-28T11:58:30.000Z</published>
-    <updated>2022-02-01T10:10:42.130Z</updated>
+    <updated>2022-02-01T10:13:25.967Z</updated>
     
     
     <summary type="html">Christmas; what a wonderfull time, wrapping paper in every store, lights and decorations on every corner what&#39;s not to like? Well here is the thing, I tend to get bored quite easily, which is why on this years family dinner; I tried something different!</summary>
