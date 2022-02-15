@@ -1,5 +1,6 @@
 ---
 title: Using the Java Kinesis Client Library (KCL) with localstack
+date: 2022-02-01 11:30:00
 icon: 💨
 image: /images/using-the-java-kinesis-client-library-kcl-with-localstack-social.jpg
 tags:
