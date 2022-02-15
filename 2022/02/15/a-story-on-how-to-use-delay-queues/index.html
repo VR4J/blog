@@ -1,0 +1,392 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#202020"/>
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+  <meta name="title" content="A story on how to use delay queues">
+
+  
+    <meta name="publish_date" property="og:publish_date" content="2022-02-15T11:30:00+00:00">
+    <meta property="article:published_time" content="2022-02-15" />
+
+    
+      
+        <meta property="article:tag" content="Java 17" />
+      
+        <meta property="article:tag" content="Spring Boot" />
+      
+        <meta property="article:tag" content="AWS" />
+      
+        <meta property="article:tag" content="SQS" />
+      
+        <meta property="article:tag" content="Delay Queue" />
+      
+    
+  
+  
+  
+    <meta name="description" content="Ever heard about delay queues, and how they could be used? Join me in this real-life use-case where we will utilise delay queues to expose critical issues." />
+    <meta property="og:description" content="Ever heard about delay queues, and how they could be used? Join me in this real-life use-case where we will utilise delay queues to expose critical issues." />
+    <meta property="twitter:description" content="Ever heard about delay queues, and how they could be used? Join me in this real-life use-case where we will utilise delay queues to expose critical issues." />
+  
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://blog.vreijsenj.nl/2022/02/15/a-story-on-how-to-use-delay-queues/" />
+  <meta property="og:title" content="A story on how to use delay queues" />
+
+  
+    <meta property="twitter:image" content="https://blog.vreijsenj.nl/images/creating-time-based-escalations-using-an-sqs-queue-social.jpg" />
+    <meta property="og:image" content="https://blog.vreijsenj.nl/images/creating-time-based-escalations-using-an-sqs-queue-social.jpg" />
+  
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="https://blog.vreijsenj.nl/2022/02/15/a-story-on-how-to-use-delay-queues/" />
+  <meta property="twitter:title" content="A story on how to use delay queues" />
+  
+  
+    <meta name="keywords" content="Java 17,Spring Boot,AWS,SQS,Delay Queue," />
+  
+
+  <meta name="author" content="Joery Vreijsen" />
+  
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <title> A story on how to use delay queues</title>
+  
+    <!-- stylesheets list from config.yml -->
+    
+      <link rel="stylesheet" href="/css/xoxo.css">
+    
+      <link rel="stylesheet" href="/css/post.css">
+    
+      <link rel="stylesheet" href="/css/footer.css">
+    
+      <link rel="stylesheet" href="/css/contact.css">
+    
+  
+  <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.6/build/pure-min.css" integrity="sha384-Uu6IeWbM+gzNVXJcM9XV3SohHtmWE+3VGi496jvgX1jyvDTXfdK+rfZc8C1Aehk5" crossorigin="anonymous">
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="J. Vreijsen" type="application/atom+xml">
+</head>
+
+
+<body>
+  <div class="nav-container">
+    <nav class="home-menu pure-menu pure-menu-horizontal">
+  <a class="pure-menu-heading" href="/">
+    <img class="avatar" src="https://blog.vreijsenj.nl/images/logo.jpeg">
+    <span class="title">J. Vreijsen</span>
+  </a>
+
+  <ul class="pure-menu-list clearfix">
+      
+          
+            <li class="pure-menu-item"><a href="/" class="pure-menu-link">Home</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/about" class="pure-menu-link">About</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/tags" class="pure-menu-link">Tags</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/archives" class="pure-menu-link">Archives</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/contact" class="pure-menu-link">Contact</a></li>
+          
+      
+  </ul>
+   
+</nav>
+  </div>
+
+  <div class="container" id="content-outer">
+    <div class="inner" id="content-inner">
+      <div class="post-container">
+  <article class="post" id="post">
+    <header class="post-header text-center">
+      <h1 class="title">
+        A story on how to use delay queues
+      </h1>
+      <span>
+        
+        <time class="time" datetime="2022-02-15T11:30:00.000Z">
+        2022-02-15
+      </time>
+        
+      </span>
+      <span class="slash">/</span>
+      <span class="post-meta">
+      <span class="post-tags">
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/AWS/" rel="tag">AWS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Delay-Queue/" rel="tag">Delay Queue</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java-17/" rel="tag">Java 17</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQS/" rel="tag">SQS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Boot/" rel="tag">Spring Boot</a></li></ul>
+      </span>
+    </span>
+      <span class="slash">/</span>
+      <span class="read">Reading Time: 13 Minute</span>
+    </header>
+
+    <div class="post-content">
+      <p>Are you looking for information on delay queues and how they should be implemented using AWS SQS? Funny, that’s exactly what i’m going to talk about.</p>
+<p>As we’re on the verge of a new Formula 1 season, lets use a real-life racing use-case. Nowadays Formula 1 cars are full of sensors to monitor everything you can imagine on a car, from tire and engine temperatures to <a target="_blank" rel="noopener" href="https://www.tyrepros.co.uk/blog/how-to-identify-a-slow-puncture-and-what-you-should-do-about-it">slow punctures</a>.</p>
+<p>Not such a Formula 1 fan? Skip to <a href="#The-Theory">the theory</a>, or check out the <a target="_blank" rel="noopener" href="https://github.com/VR4J/sqs-delayed-escalation-service">Github Repository</a> for the final code.</p>
+<h2 id="The-Goal"><a href="#The-Goal" class="headerlink" title="The Goal"></a>The Goal</h2><p>During a race, engine temperatures can rise for a number of reasons without it immediately meaning there is an issue. For example, our car is following another car closely and is therefore picking up hot air from the car in front, making our engine temperatures run high. Generally this isn’t a problem, as running closely behind another car is needed to make an overtake, but if the driver fails to make a successfull overtake and keeps driving within this hot air for a prolonged period of time, the risk of engine damage becomes bigger and bigger.</p>
+<p>Since we have excellent sensors on our car, we receive real-time engine temperature updates and can notify the pitwall whenever the engine temperature has been too high for too long.</p>
+<h2 id="The-Theory"><a href="#The-Theory" class="headerlink" title="The Theory"></a>The Theory</h2><p>Let’s get theoretical shall we?</p>
+<img src="/images/delay-queues-explained.svg" />
+
+<p>Based on the schematic above we can list the responsibilities of our Spring Boot service:</p>
+<ol>
+<li>Receive temperature changes, and keep the engine state updated.</li>
+<li>Whenever the temperature has crossed our threshold, send a <strong>delayed</strong> temperature check message to the queue.</li>
+<li>Receive the delayed message and check whether the engine temperature is still above our threshold and if so, raise the severity.</li>
+<li>Send notifications on severity changes.</li>
+</ol>
+<h2 id="The-Execution"><a href="#The-Execution" class="headerlink" title="The Execution"></a>The Execution</h2><p>On to the implementation we go and first things first, we setup the Gradle project using the following <strong>build.gradle</strong> file.</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">plugins &#123;</span><br><span class="line">	id <span class="string">&#x27;org.springframework.boot&#x27;</span> version <span class="string">&#x27;2.6.3&#x27;</span></span><br><span class="line">	id <span class="string">&#x27;io.spring.dependency-management&#x27;</span> version <span class="string">&#x27;1.0.11.RELEASE&#x27;</span></span><br><span class="line">	id <span class="string">&#x27;java&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">group = <span class="string">&#x27;com.vreijsenj&#x27;</span></span><br><span class="line">version = <span class="string">&#x27;0.0.1-SNAPSHOT&#x27;</span></span><br><span class="line">sourceCompatibility = <span class="string">&#x27;17&#x27;</span></span><br><span class="line"></span><br><span class="line">configurations &#123;</span><br><span class="line">	compileOnly &#123;</span><br><span class="line">		extendsFrom annotationProcessor</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">repositories &#123;</span><br><span class="line">	mavenCentral()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">tasks.withType(JavaCompile) &#123;</span><br><span class="line">	options.compilerArgs += <span class="string">&quot;--enable-preview&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">dependencies &#123;</span><br><span class="line">	annotationProcessor(<span class="string">&quot;org.springframework.boot:spring-boot-configuration-processor&quot;</span>)</span><br><span class="line"></span><br><span class="line">	implementation(<span class="string">&quot;org.springframework.boot:spring-boot-starter-webflux&quot;</span>)</span><br><span class="line">	implementation(<span class="string">&quot;org.springframework:spring-context&quot;</span>)</span><br><span class="line"></span><br><span class="line">	implementation(<span class="string">&quot;javax.servlet:javax.servlet-api:4.0.1&quot;</span>)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// SQS Client Library</span></span><br><span class="line">	implementation(<span class="string">&quot;software.amazon.awssdk:sqs:2.17.123&quot;</span>)</span><br><span class="line">	implementation(<span class="string">&quot;com.amazonaws:amazon-sqs-java-messaging-lib:1.0.8&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	compileOnly(<span class="string">&quot;org.projectlombok:lombok:1.18.20&quot;</span>)</span><br><span class="line">	annotationProcessor(<span class="string">&quot;org.projectlombok:lombok:1.18.20&quot;</span>)</span><br><span class="line">	testImplementation(<span class="string">&quot;org.springframework.boot:spring-boot-starter-test&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">tasks.named(<span class="string">&#x27;test&#x27;</span>) &#123;</span><br><span class="line">	useJUnitPlatform()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Now that we got that out of the way, wouldn’t it be nice to be able to use JMS with SQS?</p>
+<p>Well, we weren’t the first ones to think of that, if we look at the <code>amazon-sqs-java-messaging-lib</code> library, we can see that there is an <code>SQSConnectionFactory</code> that implements the JMS <code>ConnectionFactory</code> interface. </p>
+<p>Alright, so once we create a bean for it we should be able to create a connection, add a message listener and get on our way!</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@Profile(&quot;!localstack&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ClientConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> AmazonSQS <span class="title">sqs</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> AmazonSQSClientBuilder.defaultClient();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> SQSConnectionFactory <span class="title">sqsConnectionFactory</span><span class="params">(AmazonSQS sqs)</span> </span>&#123;</span><br><span class="line">        ProviderConfiguration configuration = <span class="keyword">new</span> ProviderConfiguration()</span><br><span class="line">                .withNumberOfMessagesToPrefetch(<span class="number">10</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> SQSConnectionFactory(configuration, sqs);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Notice that we put the <code>@Profile(&quot;!localstack&quot;)</code> on it, as in the <a target="_blank" rel="noopener" href="https://github.com/VR4J/sqs-delayed-escalation-service">Github Repository</a> there is also a <code>@Profile(&quot;localstack&quot;)</code> configuration which allows us to connect to a localstack environment to test the integration on our own computer.</p>
+<p>Right, so we got the <strong>SQSConnectionFactory</strong> bean, lets create a connection and register a message listener!</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@RequiredArgsConstructor</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SqsConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> SQSConnectionFactory sqsConnectionFactory;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> SQSConnectionProperties properties;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> MessageListener sqsMessageListener;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@PostConstruct</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">registerQueueListener</span><span class="params">()</span> <span class="keyword">throws</span> JMSException </span>&#123;</span><br><span class="line">        SQSConnection connection = sqsConnectionFactory.createConnection();</span><br><span class="line">        Session session = connection.createSession(<span class="keyword">false</span>, Session.AUTO_ACKNOWLEDGE);</span><br><span class="line">        MessageConsumer consumer = session.createConsumer(session.createQueue(properties.getName()));</span><br><span class="line"></span><br><span class="line">        consumer.setMessageListener(sqsMessageListener);</span><br><span class="line">        connection.start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Let’s make a quick pitstop; As you can see in addition to the <strong>SQSConnectionFactory</strong>, we also autowired a <strong>ConfigurationProperties</strong> bean to be able to specify our target sqs queue in the <code>application.yaml</code>, but also a JMS MessageListener bean to be registered when creating the connection.</p>
+<p>In the <strong>SQSMessageListener</strong> we will make a distinction between the two types of messages that we can receive:</p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://github.com/VR4J/sqs-delayed-escalation-service/blob/main/src/main/java/com/vreijsenj/escalation/temperature/TemperatureChangeMessage.java">Temperature Change Message</a>: Comes directly from our engine, and contains the current temperature.</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/VR4J/sqs-delayed-escalation-service/blob/main/src/main/java/com/vreijsenj/escalation/temperature/TemperatureCheckMessage.java">Temperature Check Message</a>: Scheduled by ourselves to check whether the temperature is still above a certain threshold.</li>
+</ol>
+<p>So before we can start writing logic on each one of them we have to identify which message was received.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@RequiredArgsConstructor</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SqsMessageListener</span> <span class="keyword">implements</span> <span class="title">MessageListener</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String CHECK_MESSAGE = <span class="string">&quot;CHECK&quot;</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String CHANGE_MESSAGE = <span class="string">&quot;CHANGE&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ObjectMapper mapper;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> TemperatureCheckListener temperatureCheckListener;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> TemperatureChangeListener temperatureChangeListener;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onMessage</span><span class="params">(Message message)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (message <span class="keyword">instanceof</span> SQSTextMessage sqsTextMessage) &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                onMessage(sqsTextMessage);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (JMSException | JsonProcessingException e) &#123;</span><br><span class="line">                log.error(<span class="string">&quot;Something went wrong retrieving the payload of the SQSTextMessage.&quot;</span>, e);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">onMessage</span><span class="params">(SQSTextMessage sqsTextMessage)</span> <span class="keyword">throws</span> JMSException, JsonProcessingException </span>&#123;</span><br><span class="line">        TemperatureMessage message = mapper.readValue(sqsTextMessage.getText(), TemperatureMessage.class);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">switch</span> (message) &#123;</span><br><span class="line">            <span class="keyword">case</span> TemperatureCheckMessage check -&gt; &#123;</span><br><span class="line">                temperatureCheckListener.onTemperatureCheck(check);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">case</span> TemperatureChangeMessage change -&gt; &#123;</span><br><span class="line">                temperatureChangeListener.onTemperatureChange(change);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">default</span> -&gt; &#123; &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><em>Bonus: Did you notice how we used the Java 17 pattern matching in our switch statement above?</em></p>
+<p>Alright, so we can now identify each message that comes in and call its respective listener.</p>
+<p>Let’s start with the <strong>TemperatureChangeMessageListener</strong> who has the responsibility of keeping the EngineState up to date and trigger a TemperatureCheckMessage whenever the threshold was exceeded.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@RequiredArgsConstructor</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TemperatureChangeListener</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> SQSConnectionProperties sqsProperties;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> EscalationConfigurationProperties escalation;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> TemperatureCheckScheduler scheduler;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> EngineState engine;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onTemperatureChange</span><span class="params">(TemperatureChangeMessage message)</span> <span class="keyword">throws</span> JsonProcessingException </span>&#123;</span><br><span class="line">        log.info(<span class="string">&quot;Temperature Change: &#123;&#125;&quot;</span>, message.getTemperature());</span><br><span class="line"></span><br><span class="line">        Double temperature = message.getTemperature();</span><br><span class="line"></span><br><span class="line">        engine.setTemperature(temperature);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(temperature &gt; escalation.getThreshold().getTemperature()) &#123;</span><br><span class="line">            scheduler.schedule(sqsProperties.getUrl(), escalation.getDelay(), engine.getSeverity());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Once again we autowire our <strong>SQSConnectionProperties</strong> in case we need to send out a temperature check message, and we autowire the <strong>EscalationConfigurationProperties</strong> which define the temperature threshold and the delay in which the engine temperature should have returned to normal.</p>
+<p>We update the <strong>EngineState</strong> and afterwards we check whether the temperature has exceeded the threshold, if so we let the <strong>TemperatureCheckScheduler</strong> schedule a message to check the temperature for when the delay has passed.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@RequiredArgsConstructor</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TemperatureCheckScheduler</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> SqsClient sqs;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ObjectMapper mapper;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">schedule</span><span class="params">(String queue, Integer delay, EngineState.Severity severity)</span> <span class="keyword">throws</span> JsonProcessingException </span>&#123;</span><br><span class="line">        String body = getMessagePayload(severity);</span><br><span class="line"></span><br><span class="line">        SendMessageRequest request = SendMessageRequest.builder()</span><br><span class="line">                .queueUrl(queue)</span><br><span class="line">                .delaySeconds(delay)</span><br><span class="line">                .messageBody(body)</span><br><span class="line">                .build();</span><br><span class="line"></span><br><span class="line">        sqs.sendMessage(request);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> String <span class="title">getMessagePayload</span><span class="params">(EngineState.Severity severity)</span> <span class="keyword">throws</span> JsonProcessingException </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> mapper.writeValueAsString(</span><br><span class="line">                <span class="keyword">new</span> TemperatureCheckMessage(CHANGE_MESSAGE, severity)</span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>In the <strong>TemperatureCheckMessage</strong> we put the severity that the engine currently has, so that when the delay has expired and the temperature is still too high, we know to what severity the engine state should be raised.</p>
+<p><em>Best practice:</em> When running this in production, it might be best to put these messages on a seperate queue to avoid any additional delays caused by other messages in the queue.</p>
+<p>Note here the <em>delaySeconds</em> in the request that prevents the message from being picked up before the delay has expired.</p>
+<p>Alright so we have completed the logic for our <strong>TemperatureChangeMessage</strong>, now lets look at what we should do when we receive our delayed <strong>TemperatureCheckMessage</strong>.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@RequiredArgsConstructor</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TemperatureCheckListener</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> EngineState engine;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> EscalationConfigurationProperties escalation;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onTemperatureCheck</span><span class="params">(TemperatureCheckMessage message)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(engine.getTemperature() &gt; escalation.getThreshold().getTemperature()) &#123;</span><br><span class="line">            EngineState.Severity previousSeverity = message.getSeverity();</span><br><span class="line">            EngineState.Severity nextSeverity = previousSeverity == EngineState.Severity.CLEAR</span><br><span class="line">                ? EngineState.Severity.WARNING</span><br><span class="line">                : EngineState.Severity.CRITICAL;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span>(engine.getSeverity() == nextSeverity) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">            log.info(<span class="string">&quot;Sending notification: Engine temperature has been above configured threshold of &#x27;&#123;&#125;&#x27; degrees celsius.&quot;</span>, escalation.getThreshold().getTemperature());</span><br><span class="line">            log.info(<span class="string">&quot;Engine severity raised to &#123;&#125;&quot;</span>, nextSeverity);</span><br><span class="line">            engine.setSeverity(nextSeverity);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>First thing first, we check whether the engine temperature is still above the configured threshold, otherwise we don’t care. We could extend the logic to de-escalate when the engine has gone below the threshold, but lets leave that for now.</p>
+<p>So the temperature is still too high and based on the previous severity in the message, we can determine what the next severity should be. As we can have multiple temperature readings within the configured delay we only update the state, and send notifications, if the engine severity has changed.</p>
+<p>That’s it, we should now be able to escalate temperature readings to our pitwall based on our configured temperature threshold!</p>
+<h2 id="The-Test"><a href="#The-Test" class="headerlink" title="The Test"></a>The Test</h2><p>When we create the following configuration in our application.yaml:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">sqs:</span></span><br><span class="line">  <span class="attr">connection:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">engine-temperatures</span></span><br><span class="line">    <span class="attr">url:</span> <span class="string">http://localhost:4566/000000000000/engine-temperatures</span></span><br><span class="line"></span><br><span class="line"><span class="attr">escalation:</span></span><br><span class="line">  <span class="attr">delay:</span> <span class="number">60</span></span><br><span class="line">  <span class="attr">threshold:</span></span><br><span class="line">    <span class="attr">temperature:</span> <span class="number">50.0</span></span><br></pre></td></tr></table></figure>
+
+<p>And we create the following queue using the awslocal cli:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ awslocal sqs create-queue --queue-name engine-temperatures</span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">&quot;QueueUrl&quot;</span>: <span class="string">&quot;http://localhost:4566/000000000000/engine-temperatures&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>And we send in the following engine temperatures using the awslocal cli:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">awslocal sqs send-message --queue-url http://localhost:4566/000000000000/engine-temperatures --message-body <span class="string">&#x27;&#123; &quot;type&quot;: &quot;CHANGE&quot;, &quot;temperature&quot;: 48.0 &#125;&#x27;</span>; \</span><br><span class="line">sleep 10; \</span><br><span class="line">awslocal sqs send-message --queue-url http://localhost:4566/000000000000/engine-temperatures --message-body <span class="string">&#x27;&#123; &quot;type&quot;: &quot;CHANGE&quot;, &quot;temperature&quot;: 53.0 &#125;&#x27;</span>; \</span><br><span class="line">sleep 10; \</span><br><span class="line">awslocal sqs send-message --queue-url http://localhost:4566/000000000000/engine-temperatures --message-body <span class="string">&#x27;&#123; &quot;type&quot;: &quot;CHANGE&quot;, &quot;temperature&quot;: 54.0 &#125;&#x27;</span>; \</span><br><span class="line">sleep 60; \</span><br><span class="line">awslocal sqs send-message --queue-url http://localhost:4566/000000000000/engine-temperatures --message-body <span class="string">&#x27;&#123; &quot;type&quot;: &quot;CHANGE&quot;, &quot;temperature&quot;: 58.0 &#125;&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>Then we should see the following log output:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">2022-02-07 15:00:46.166  INFO : Temperature Change: 48.0</span><br><span class="line">2022-02-07 15:00:56.777  INFO : Temperature Change: 53.0</span><br><span class="line">2022-02-07 15:01:07.677  INFO : Temperature Change: 54.0</span><br><span class="line">2022-02-07 15:01:56.950  INFO : Sending notification: Engine temperature has been above configured threshold of <span class="string">&#x27;50.0&#x27;</span> degrees celsius.</span><br><span class="line">2022-02-07 15:01:56.950  INFO : Engine severity raised to WARNING</span><br><span class="line">2022-02-07 15:02:08.359  INFO : Temperature Change: 58.0</span><br><span class="line">2022-02-07 15:03:08.414  INFO : Sending notification: Engine temperature has been above configured threshold of <span class="string">&#x27;50.0&#x27;</span> degrees celsius.</span><br><span class="line">2022-02-07 15:03:08.414  INFO : Engine severity raised to CRITICAL</span><br></pre></td></tr></table></figure>
+
+<p>Call me a Geek, but if that’s not cool, i don’t know what is.</p>
+<p>Hope you enjoyed the long post, as always if you’re interested in the whole code base; the <a target="_blank" rel="noopener" href="https://github.com/VR4J/sqs-delayed-escalation-service">Github Repository</a> is just one click away!</p>
+
+    </div>
+  </article>
+  <div class="toc-container">
+    
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">Chapters</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#The-Goal"><span class="toc-text">The Goal</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#The-Theory"><span class="toc-text">The Theory</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#The-Execution"><span class="toc-text">The Execution</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#The-Test"><span class="toc-text">The Test</span></a></li></ol>
+  </div>
+
+
+  </div>
+</div>
+<div class="copyright">
+
+</div>
+<div class="share" style="width: 100%;">
+  
+</div>
+
+  
+    <!-- <div class="post-nav">
+      <div class="post-nav-item post-nav-next">
+        
+          <span>〈 </span>
+          <a href="/2022/02/01/using-the-java-kinesis-client-library-with-localstack/" rel="next" title="Using the Java Kinesis Client Library (KCL) with localstack">
+          Using the Java Kinesis Client Library (KCL) with localstack
+          </a>
+        
+      </div>
+  
+      <div class="post-nav-item post-nav-prev">
+          
+      </div>
+    </div> -->
+  
+
+
+    </div>
+
+    
+
+  </div>
+  <footer class="footer text-center">
+    <div id="bottom-inner">
+        <a class="bottom-item" href="/">Home</a> |
+        <a class="bottom-item" href="/archives">Blog</a> |
+        <a class="bottom-item" href="https://github.com/VR4J" target="_blank">GitHub</a> |
+        <a class="bottom-item" href="https://hexo.io" target="_blank">Powered by hexo</a>
+        <span class="bottom-item desktop-only">Somehow liking my gibberish? Use the <a class="brave" href="https://brave.com" target="_blank">Brave Browser</a> to tip me, or feed my caffeine addiction by <a class="buymeacoffee" href="https://www.buymeacoffee.com/vreijsenj" target="_blank"> buying me a Monster</a>.</span>
+    </div>
+</footer>
+  
+
+<script>
+  (function(window, document, undefined) {
+
+    var timer = null;
+
+    function returnTop() {
+      cancelAnimationFrame(timer);
+      timer = requestAnimationFrame(function fn() {
+        var oTop = document.body.scrollTop || document.documentElement.scrollTop;
+        if (oTop > 0) {
+          document.body.scrollTop = document.documentElement.scrollTop = oTop - 50;
+          timer = requestAnimationFrame(fn);
+        } else {
+          cancelAnimationFrame(timer);
+        }
+      });
+    }
+
+    var hearts = [];
+    window.requestAnimationFrame = (function() {
+      return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function(callback) {
+          setTimeout(callback, 1000 / 60);
+        }
+    })();
+    init();
+
+    function init() {
+      css(".heart{z-index:9999;width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: absolute;}.heart:after{top: -5px;}.heart:before{left: -5px;}");
+      attachEvent();
+      gameloop();
+      addMenuEvent();
+    }
+
+    function gameloop() {
+      for (var i = 0; i < hearts.length; i++) {
+        if (hearts[i].alpha <= 0) {
+          document.body.removeChild(hearts[i].el);
+          hearts.splice(i, 1);
+          continue;
+        }
+        hearts[i].y--;
+        hearts[i].scale += 0.004;
+        hearts[i].alpha -= 0.013;
+        hearts[i].el.style.cssText = "left:" + hearts[i].x + "px;top:" + hearts[i].y + "px;opacity:" + hearts[i].alpha + ";transform:scale(" + hearts[i].scale + "," + hearts[i].scale + ") rotate(45deg);background:" + hearts[i].color;
+      }
+      requestAnimationFrame(gameloop);
+    }
+
+    /**
+     * 给logo设置点击事件
+     * 
+     * - 回到顶部
+     * - 出现爱心
+     */
+    function attachEvent() {
+      var old = typeof window.onclick === "function" && window.onclick;
+      var logo = document.getElementById("logo");
+      if (logo) {
+        logo.onclick = function(event) {
+          returnTop();
+          old && old();
+          createHeart(event);
+        }
+      }
+      
+    }
+
+    function createHeart(event) {
+      var d = document.createElement("div");
+      d.className = "heart";
+      hearts.push({
+        el: d,
+        x: event.clientX - 5,
+        y: event.clientY - 5,
+        scale: 1,
+        alpha: 1,
+        color: randomColor()
+      });
+      document.body.appendChild(d);
+    }
+
+    function css(css) {
+      var style = document.createElement("style");
+      style.type = "text/css";
+      try {
+        style.appendChild(document.createTextNode(css));
+      } catch (ex) {
+        style.styleSheet.cssText = css;
+      }
+      document.getElementsByTagName('head')[0].appendChild(style);
+    }
+
+    function randomColor() {
+      // return "rgb(" + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + ")";
+      return "#F44336";
+    }
+
+    function addMenuEvent() {
+      var menu = document.getElementById('menu-main-post');
+      if (menu) {
+        var toc = document.getElementById('toc');
+        if (toc) {
+          menu.onclick = function() {
+            if (toc) {
+              if (toc.style.display == 'block') {
+                toc.style.display = 'none';
+              } else {
+                toc.style.display = 'block';
+              }
+            }
+          };
+        } else {
+          menu.style.display = 'none';
+        }
+      }
+    }
+
+  })(window, document);
+</script>
+
+  
+
+
+
+</body>
+</html>
