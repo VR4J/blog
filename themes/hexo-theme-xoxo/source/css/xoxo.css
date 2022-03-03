@@ -447,12 +447,14 @@ body {
 .post-container .toc-container .toc-article ul {
   list-style: none;
   padding-left: 0;
+  margin: 0;
 }
 .post-container .toc-container .toc-article ol ol,
 .post-container .toc-container .toc-article ul ol,
 .post-container .toc-container .toc-article ol ul,
 .post-container .toc-container .toc-article ul ul {
   padding-left: 1rem;
+  margin: 0;
 }
 .post-container .toc-container .toc-article .toc .toc-item {
   text-overflow: ellipsis;
