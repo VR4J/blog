@@ -25,9 +25,9 @@ RedisJson seeks these gaps where a document-based database fails to meet the per
 You're probably wondering.. well how do we use it then? Well it's true that when you look at the latest version of the [Spring Data Redis](https://github.com/spring-projects/spring-data-redis) library it will just use @RedisHash annotations not leveraging any of the features mentioned above. Which is why you need to add the [Redis OM Spring](https://github.com/redis/redis-om-spring) library to add all these nice features. **Redis Object Mapping**, or Redis OM for short, provides annotations like `@Document` to map Spring Data models to Redis JSON documents.
 
 ## Example
-Alright so lets dive into a use-case and see how it works!
+Alright so let's dive into a use-case and see how it works!
 
-Assume we have a webstore that sells all different kind of things: books, games, good old fashion dvd's, and more. Everything is going easy peasy, but with the rising amount of orders coming in we start to retroactively cancel, or delay orders because items went out of stock faster than we could update our webstore.
+Assume we have a webstore that sells all different kinds of things: books, games, good old fashion dvd's, and more. Everything is going easy peasy, but with the rising amount of orders coming in we start to retroactively cancel, or delay orders because items went out of stock faster than we could update our webstore.
 
 Since we live in this hyper modern world we decide to have a look at live stock updates, which need to be fast, reliable but also dynamic to our articles. 
 
