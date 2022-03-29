@@ -1,0 +1,375 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#202020"/>
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+  <meta name="title" content="Preview to Redis OM Spring using RedisJson">
+
+  
+    <meta name="publish_date" property="og:publish_date" content="2022-03-29T11:30:00+00:00">
+    <meta property="article:published_time" content="2022-03-29" />
+
+    
+      
+        <meta property="article:tag" content="Java 17" />
+      
+        <meta property="article:tag" content="Spring Boot" />
+      
+        <meta property="article:tag" content="Redis" />
+      
+        <meta property="article:tag" content="Redis OM" />
+      
+        <meta property="article:tag" content="RedisJson" />
+      
+    
+  
+  
+  
+    <meta name="description" content="After the announcement made last week about RedisJson 2.0 in RedisDays London 2022, lets have a look at how to use it in Spring Boot!" />
+    <meta property="og:description" content="After the announcement made last week about RedisJson 2.0 in RedisDays London 2022, lets have a look at how to use it in Spring Boot!" />
+    <meta property="twitter:description" content="After the announcement made last week about RedisJson 2.0 in RedisDays London 2022, lets have a look at how to use it in Spring Boot!" />
+  
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://blog.vreijsenj.nl/2022/03/29/preview-to-redis-om-spring-using-redis-json/" />
+  <meta property="og:title" content="Preview to Redis OM Spring using RedisJson" />
+
+  
+    <meta property="twitter:image" content="https://blog.vreijsenj.nl/images/preview-to-redis-om-spring-using-redis-json-social.jpg" />
+    <meta property="og:image" content="https://blog.vreijsenj.nl/images/preview-to-redis-om-spring-using-redis-json-social.jpg" />
+  
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="https://blog.vreijsenj.nl/2022/03/29/preview-to-redis-om-spring-using-redis-json/" />
+  <meta property="twitter:title" content="Preview to Redis OM Spring using RedisJson" />
+  
+  
+    <meta name="keywords" content="Java 17,Spring Boot,Redis,Redis OM,RedisJson," />
+  
+
+  <meta name="author" content="Joery Vreijsen" />
+  
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <title> Preview to Redis OM Spring using RedisJson</title>
+  
+    <!-- stylesheets list from config.yml -->
+    
+      <link rel="stylesheet" href="/css/xoxo.css">
+    
+      <link rel="stylesheet" href="/css/post.css">
+    
+      <link rel="stylesheet" href="/css/footer.css">
+    
+      <link rel="stylesheet" href="/css/contact.css">
+    
+  
+  <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.6/build/pure-min.css" integrity="sha384-Uu6IeWbM+gzNVXJcM9XV3SohHtmWE+3VGi496jvgX1jyvDTXfdK+rfZc8C1Aehk5" crossorigin="anonymous">
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="J. Vreijsen" type="application/atom+xml">
+</head>
+
+
+<body>
+  <div class="nav-container">
+    <nav class="home-menu pure-menu pure-menu-horizontal">
+  <a class="pure-menu-heading" href="/">
+    <img class="avatar" src="https://blog.vreijsenj.nl/images/logo.jpeg">
+    <span class="title">J. Vreijsen</span>
+  </a>
+
+  <ul class="pure-menu-list clearfix">
+      
+          
+            <li class="pure-menu-item"><a href="/" class="pure-menu-link">Home</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/about" class="pure-menu-link">About</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/tags" class="pure-menu-link">Tags</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/archives" class="pure-menu-link">Archives</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/contact" class="pure-menu-link">Contact</a></li>
+          
+      
+  </ul>
+   
+</nav>
+  </div>
+
+  <div class="container" id="content-outer">
+    <div class="inner" id="content-inner">
+      <div class="post-container">
+  <article class="post" id="post">
+    <header class="post-header text-center">
+      <h1 class="title">
+        Preview to Redis OM Spring using RedisJson
+      </h1>
+      <span>
+        
+        <time class="time" datetime="2022-03-29T11:30:00.000Z">
+        2022-03-29
+      </time>
+        
+      </span>
+      <span class="slash">/</span>
+      <span class="post-meta">
+      <span class="post-tags">
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java-17/" rel="tag">Java 17</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Redis-OM/" rel="tag">Redis OM</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RedisJson/" rel="tag">RedisJson</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Boot/" rel="tag">Spring Boot</a></li></ul>
+      </span>
+    </span>
+      <span class="slash">/</span>
+      <span class="read">Reading Time: 11 Minute</span>
+    </header>
+
+    <div class="post-content">
+      <p>Just a few days ago, <strong>Redis CEO Ofer Bengal</strong> announced the global availability of <a target="_blank" rel="noopener" href="https://redis.com/press/redisjson-2-0-serves-as-fast-flexible-document-database/">RedisJson 2.0</a>. Wondering why that is all cool and worth your time? Well scroll a bit further down and I’ll tell ya!</p>
+<p>As always, feel free to skip ahead and check out the <a target="_blank" rel="noopener" href="https://github.com/VR4J/redis-json-stock-management">Github Repository</a> containing all the code.</p>
+<h2 id="What-is-RedisJson"><a href="#What-is-RedisJson" class="headerlink" title="What is RedisJson"></a>What is RedisJson</h2><p>RedisJson is an in-memory document store that provides real-time access to and processing of JSON documents. RedisJson 2.0 adds native indexing, querying, and full-text search capabilities, all leveraging RediSearch which makes it a very powerfull tool for us Computer Geeks. While document-based databases are becoming a trend because of their flexibility in dynamic scheming, they are still struggling with the performance requirements a relational database offers.</p>
+<p>RedisJson seeks these gaps where a document-based database fails to meet the performance requirement, but is perfect for its use-case because of its dynamic scheming.</p>
+<h2 id="What-is-Redis-OM-Spring"><a href="#What-is-Redis-OM-Spring" class="headerlink" title="What is Redis OM Spring"></a>What is Redis OM Spring</h2><p>You’re probably wondering.. well how do we use it then? Well it’s true that when you look at the latest version of the <a target="_blank" rel="noopener" href="https://github.com/spring-projects/spring-data-redis">Spring Data Redis</a> library it will just use @RedisHash annotations not leveraging any of the features mentioned above. Which is why you need to add the <a target="_blank" rel="noopener" href="https://github.com/redis/redis-om-spring">Redis OM Spring</a> library to add all these nice features. <strong>Redis Object Mapping</strong>, or Redis OM for short, provides annotations like <code>@Document</code> to map Spring Data models to Redis JSON documents.</p>
+<h2 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h2><p>Alright so lets dive into a use-case and see how it works!</p>
+<p>Assume we have a webstore that sells all different kind of things: books, games, good old fashion dvd’s, and more. Everything is going easy peasy, but with the rising amount of orders coming in we start to retroactively cancel, or delay orders because items went out of stock faster than we could update our webstore.</p>
+<p>Since we live in this hyper modern world we decide to have a look at live stock updates, which need to be fast, reliable but also dynamic to our articles. </p>
+<h3 id="Setup"><a href="#Setup" class="headerlink" title="Setup"></a>Setup</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@Document</span> <span class="comment">// Redis OM Spring 🎉</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StockItem</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    String id;</span><br><span class="line">    Category category;</span><br><span class="line"></span><br><span class="line">    T details;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">double</span> price;</span><br><span class="line">    <span class="keyword">long</span> stock;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="class"><span class="keyword">enum</span> <span class="title">Category</span> </span>&#123;</span><br><span class="line">        BOOK, GAME</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Every item that we have in our store comes down to being in a certain <strong>category</strong>, having a <strong>price</strong>, and the amount of <strong>stock</strong> that is left. Dependend on the category we can have some specific implementation of details like you can see in the <code>StockItem</code> above. </p>
+<p>We can then define the details specific implementations per category like the examples below.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Book</span> </span>&#123;</span><br><span class="line">    String ean;</span><br><span class="line">    String title;</span><br><span class="line">    String author;</span><br><span class="line">    Date published;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Game</span> </span>&#123;</span><br><span class="line">    String title;</span><br><span class="line">    Platform platform;</span><br><span class="line">    Date released;</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">enum</span> <span class="title">Platform</span> </span>&#123;</span><br><span class="line">        PC, PS4, PS5, XBOX_ONE</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Alright! So in order to use and save our RedisJson documents we will need to specify our Repository.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> com.redis.om.spring.repository.RedisDocumentRepository;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">StockRepository</span> <span class="keyword">extends</span> <span class="title">RedisDocumentRepository</span>&lt;<span class="title">StockItem</span>&lt;?&gt;, <span class="title">String</span>&gt; </span>&#123; &#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>Important</strong>:<br>Redis OM Spring will only pickup the repository if you add the <code>@EnableRedisDocumentRepositories</code> annotation, however as of today, you also need to specify the <code>basePackages</code> property in order for it to be picked up. </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="meta">@EnableRedisDocumentRepositories(basePackages = &quot;nl.vreijsenj.redisjson.stock&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StockManagementApplication</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		SpringApplication.run(StockManagementApplication.class, args);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Seeding"><a href="#Seeding" class="headerlink" title="Seeding"></a>Seeding</h3><p>We can’t start updating the stock without having actual StockItems in Redis, so we create an event listener that seeds Redis on startup using our Redis Repository.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@RequiredArgsConstructor</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CatalogSeeder</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> StockRepository repository;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@EventListener</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">seed</span><span class="params">(ContextRefreshedEvent event)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 2016-05-10</span></span><br><span class="line">        Instant released = Instant.ofEpochSecond(<span class="number">1462838400</span>);</span><br><span class="line">        Game uncharted = <span class="keyword">new</span> Game(<span class="string">&quot;Uncharted 4: A Thief&#x27;s End&quot;</span>, Game.Platform.PS4, Date.from(released));</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 2015-07-01</span></span><br><span class="line">        Instant published = Instant.ofEpochSecond(<span class="number">1435708800</span>);</span><br><span class="line">        Book dune = <span class="keyword">new</span> Book(<span class="string">&quot;9780340960196&quot;</span>, <span class="string">&quot;Dune&quot;</span>, <span class="string">&quot;Hubert, Frank&quot;</span>, Date.from(published));</span><br><span class="line"></span><br><span class="line">        StockItem&lt;Game&gt; game = <span class="keyword">new</span> CatalogItem&lt;&gt;(<span class="keyword">null</span>, StockItem.Category.GAME, uncharted, <span class="number">21.74</span>, <span class="number">10</span>);</span><br><span class="line">        StockItem&lt;Book&gt; book = <span class="keyword">new</span> CatalogItem&lt;&gt;(<span class="keyword">null</span>, StockItem.Category.BOOK, dune, <span class="number">11.99</span>, <span class="number">10</span>);</span><br><span class="line"></span><br><span class="line">        repository.save(game);</span><br><span class="line">        repository.save(book);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>When we start our application and have a look in redis we can now see we have two StockItems!</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">$ redis-cli -h localhost -p 6379 --raw</span><br><span class="line">redis &gt; KEYS *</span><br><span class="line">nl.vreijsenj.redisjson.stock.StockItem</span><br><span class="line">nl.vreijsenj.redisjson.stock.StockItem:01FZ02YKEZ3QM96ZNTJYHSJHB0</span><br><span class="line">nl.vreijsenj.redisjson.stock.StockItem:01FZ02YKCG7XP75A7GGD0YN6DM</span><br><span class="line">redis &gt; JSON.GET nl.vreijsenj.redisjson.stock.StockItem:01FZ02YKEZ3QM96ZNTJYHSJHB0 NEWLINE <span class="string">&quot;\n&quot;</span> SPACE <span class="string">&quot; &quot;</span> INDENT <span class="string">&quot;\t&quot;</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="string">&quot;id&quot;</span>: <span class="string">&quot;01FZ02YKEZ3QM96ZNTJYHSJHB0&quot;</span>,</span><br><span class="line">	<span class="string">&quot;category&quot;</span>: <span class="string">&quot;BOOK&quot;</span>,</span><br><span class="line">	<span class="string">&quot;details&quot;</span>: &#123;</span><br><span class="line">		<span class="string">&quot;ean&quot;</span>: <span class="string">&quot;9780340960196&quot;</span>,</span><br><span class="line">		<span class="string">&quot;title&quot;</span>: <span class="string">&quot;Dune&quot;</span>,</span><br><span class="line">		<span class="string">&quot;author&quot;</span>: <span class="string">&quot;Hubert, Frank&quot;</span>,</span><br><span class="line">		<span class="string">&quot;published&quot;</span>: 1435708800000</span><br><span class="line">	&#125;,</span><br><span class="line">	<span class="string">&quot;price&quot;</span>: 11.99,</span><br><span class="line">	<span class="string">&quot;stock&quot;</span>: 10</span><br><span class="line">&#125;</span><br><span class="line">redis &gt; JSON.GET nl.vreijsenj.redisjson.stock.StockItem:01FZ02YKCG7XP75A7GGD0YN6DM NEWLINE <span class="string">&quot;\n&quot;</span> SPACE <span class="string">&quot; &quot;</span> INDENT <span class="string">&quot;\t&quot;</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="string">&quot;id&quot;</span>: <span class="string">&quot;01FZ02YKCG7XP75A7GGD0YN6DM&quot;</span>,</span><br><span class="line">	<span class="string">&quot;category&quot;</span>: <span class="string">&quot;GAME&quot;</span>,</span><br><span class="line">	<span class="string">&quot;details&quot;</span>: &#123;</span><br><span class="line">		<span class="string">&quot;title&quot;</span>: <span class="string">&quot;Uncharted 4: A Thief&#x27;s End&quot;</span>,</span><br><span class="line">		<span class="string">&quot;platform&quot;</span>: <span class="string">&quot;PS4&quot;</span>,</span><br><span class="line">		<span class="string">&quot;released&quot;</span>: 1462838400000</span><br><span class="line">	&#125;,</span><br><span class="line">	<span class="string">&quot;price&quot;</span>: 21.74,</span><br><span class="line">	<span class="string">&quot;stock&quot;</span>: 10</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Updating"><a href="#Updating" class="headerlink" title="Updating"></a>Updating</h3><p>We have our data setup, and we can now start updating our stock whenever a new order is placed.</p>
+<p>Unfortunately the Redis OM Spring library doesn’t (yet) allow partial document updates using the Repository, or a dedicated template bean. Fortunately it does allow us to autowire a <code>JSONOperations&lt;?&gt;</code> bean that is capable of doing partial document updates.</p>
+<p>Let’s say we have an order coming in, and we need to update the stock right away.</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">POST /api/v1.0/orders</span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">&quot;user&quot;</span>: &#123;</span><br><span class="line">        <span class="string">&quot;forename&quot;</span>: <span class="string">&quot;Joery&quot;</span>,</span><br><span class="line">        <span class="string">&quot;surname&quot;</span>: <span class="string">&quot;Vreijsen&quot;</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">&quot;lines&quot;</span>: [&#123;</span><br><span class="line">        <span class="string">&quot;stockItemId&quot;</span>: <span class="string">&quot;01FZ0APM02XF8NAHTXW6PXTYAC&quot;</span>,</span><br><span class="line">        <span class="string">&quot;count&quot;</span>: 2</span><br><span class="line">    &#125;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>We have an <code>OrderService</code> which will process all incoming orders, and pick every item on the order from the stock.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@RequiredArgsConstructor</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OrderService</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> StockService stock;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Order <span class="title">process</span><span class="params">(Order order)</span> </span>&#123;</span><br><span class="line">        order.getLines().forEach(line -&gt;</span><br><span class="line">            stock.pick(line.getStockItemId(), line.getCount())</span><br><span class="line">        );</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> order;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>When picking from the Stock, we call the responsible <code>StockService</code>.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@RequiredArgsConstructor</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StockService</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> JSONOperations&lt;String&gt; ops;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">pick</span><span class="params">(String id, <span class="keyword">long</span> count)</span> </span>&#123;</span><br><span class="line">        Long current = ops.get(getKey(id), <span class="keyword">long</span>.class, Path.of(<span class="string">&quot;stock&quot;</span>));</span><br><span class="line"></span><br><span class="line">        <span class="keyword">assert</span> current != <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(current &lt; count) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> OutOfStockException(</span><br><span class="line">                    String.format(<span class="string">&quot;Cannot pick item [%s] as there is not enough stock (%s) available for the requested amount of %s.&quot;</span>, id, current, count)</span><br><span class="line">            );</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        ops.set(getKey(id), current - count, Path.of(<span class="string">&quot;stock&quot;</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> String <span class="title">getKey</span><span class="params">(String id)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> String.format(<span class="string">&quot;nl.vreijsenj.redisjson.stock.StockItem:%s&quot;</span>, id);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>The <code>StockService</code> will use the <code>JSONOperations&lt;?&gt;</code> bean to fetch the stock property from the StockItem and reduce it with the amount that was ordered.</p>
+<p>Unfortunately RedisJson does not offer a way (yet) of reducing a numeric property in a single operation, which means theoretically there could be enough stock when we call the <code>get</code> operation, when while updating the stock another (outside) process could have already claimed it.</p>
+<p>Since in this case we are the only running instance, and we are the only one updating these documents, we can manage by declaring the pick method as <code>synchronized</code> to make sure there is no other thread interfering.</p>
+<h2 id="Result"><a href="#Result" class="headerlink" title="Result"></a>Result</h2><p>Using the <code>monitor</code> command in the <code>redis-cli</code> we can monitor every command that is being executed on our redis-server and see whether our stock is being correctly updated.</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">1648204926.982903 [0 xxx.xx.x.x:61670] <span class="string">&quot;SISMEMBER&quot;</span> <span class="string">&quot;nl.vreijsenj.redisjson.stock.StockItem&quot;</span> <span class="string">&quot;01FZ0APKZ9SW1MAPXCPCY3HHK6&quot;</span></span><br><span class="line">1648204926.990580 [0 xxx.xx.x.x:61670] <span class="string">&quot;EXISTS&quot;</span> <span class="string">&quot;nl.vreijsenj.redisjson.stock.StockItem:01FZ0APKZ9SW1MAPXCPCY3HHK6&quot;</span></span><br><span class="line">1648204926.998838 [0 xxx.xx.x.x:61670] <span class="string">&quot;JSON.SET&quot;</span> <span class="string">&quot;nl.vreijsenj.redisjson.catstockalog.StockItem:01FZ0APKZ9SW1MAPXCPCY3HHK6&quot;</span> <span class="string">&quot;.&quot;</span> <span class="string">&quot;&#123;\&quot;id\&quot;:\&quot;01FZ0APKZ9SW1MAPXCPCY3HHK6\&quot;,\&quot;category\&quot;:\&quot;GAME\&quot;,\&quot;details\&quot;:&#123;\&quot;title\&quot;:\&quot;Uncharted 4: A Thief\\u0027s End\&quot;,\&quot;platform\&quot;:\&quot;PS4\&quot;,\&quot;released\&quot;:1462838400000&#125;,\&quot;price\&quot;:21.74,\&quot;stock\&quot;:10&#125;&quot;</span></span><br><span class="line">1648204927.001772 [0 xxx.xx.x.x:61670] <span class="string">&quot;SADD&quot;</span> <span class="string">&quot;nl.vreijsenj.redisjson.stock.StockItem&quot;</span> <span class="string">&quot;01FZ0APKZ9SW1MAPXCPCY3HHK6&quot;</span></span><br><span class="line">1648204927.005298 [0 xxx.xx.x.x:61670] <span class="string">&quot;SISMEMBER&quot;</span> <span class="string">&quot;nl.vreijsenj.redisjson.stock.StockItem&quot;</span> <span class="string">&quot;01FZ0APM02XF8NAHTXW6PXTYAC&quot;</span></span><br><span class="line">1648204927.008958 [0 xxx.xx.x.x:61670] <span class="string">&quot;EXISTS&quot;</span> <span class="string">&quot;nl.vreijsenj.redisjson.stock.StockItem:01FZ0APM02XF8NAHTXW6PXTYAC&quot;</span></span><br><span class="line">1648204927.010938 [0 xxx.xx.x.x:61670] <span class="string">&quot;JSON.SET&quot;</span> <span class="string">&quot;nl.vreijsenj.redisjson.stock.StockItem:01FZ0APM02XF8NAHTXW6PXTYAC&quot;</span> <span class="string">&quot;.&quot;</span> <span class="string">&quot;&#123;\&quot;id\&quot;:\&quot;01FZ0APM02XF8NAHTXW6PXTYAC\&quot;,\&quot;category\&quot;:\&quot;BOOK\&quot;,\&quot;details\&quot;:&#123;\&quot;ean\&quot;:\&quot;9780340960196\&quot;,\&quot;title\&quot;:\&quot;Dune\&quot;,\&quot;author\&quot;:\&quot;Hubert, Frank\&quot;,\&quot;published\&quot;:1435708800000&#125;,\&quot;price\&quot;:11.99,\&quot;stock\&quot;:10&#125;&quot;</span></span><br><span class="line">1648204927.013049 [0 xxx.xx.x.x:61670] <span class="string">&quot;SADD&quot;</span> <span class="string">&quot;nl.vreijsenj.redisjson.stock.StockItem&quot;</span> <span class="string">&quot;01FZ0APM02XF8NAHTXW6PXTYAC&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>We can see that our <code>CatalogSeeder</code> creates the initial StockItems, and keeps an index on the id property.</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1648204941.548383 [0 xxx.xx.x.x:61670] <span class="string">&quot;JSON.GET&quot;</span> <span class="string">&quot;nl.vreijsenj.redisjson.stock.StockItem:01FZ0APM02XF8NAHTXW6PXTYAC&quot;</span> <span class="string">&quot;stock&quot;</span></span><br><span class="line">1648204941.552428 [0 xxx.xx.x.x:61670] <span class="string">&quot;JSON.SET&quot;</span> <span class="string">&quot;nl.vreijsenj.redisjson.stock.StockItem:01FZ0APM02XF8NAHTXW6PXTYAC&quot;</span> <span class="string">&quot;stock&quot;</span> <span class="string">&quot;8&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>After that when placing the order, we can see that the <code>JSON.GET</code> and the <code>JSON.SET</code> operations are called to update the stock in just 5 miliseconds.<br>Considering this was run from my humble local environment, I say that is pretty damn fast.</p>
+<p>That’s all folks! As always if you want to see the full implementation, or just sniff around the codebase, here is the <a target="_blank" rel="noopener" href="https://github.com/VR4J/redis-json-stock-management">Github Repository</a>.</p>
+<p>Cheerios!</p>
+
+    </div>
+  </article>
+  <div class="toc-container">
+    
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">Chapters</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#What-is-RedisJson"><span class="toc-text">What is RedisJson</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#What-is-Redis-OM-Spring"><span class="toc-text">What is Redis OM Spring</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Example"><span class="toc-text">Example</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Setup"><span class="toc-text">Setup</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Seeding"><span class="toc-text">Seeding</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Updating"><span class="toc-text">Updating</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Result"><span class="toc-text">Result</span></a></li></ol>
+  </div>
+
+
+  </div>
+</div>
+<div class="copyright">
+
+</div>
+<div class="share" style="width: 100%;">
+  
+</div>
+
+  
+    <!-- <div class="post-nav">
+      <div class="post-nav-item post-nav-next">
+        
+          <span>〈 </span>
+          <a href="/2022/03/03/de-serializing-polymorphic-objects-with-jackson/" rel="next" title="(De)-serializing Polymorphic objects with Jackson">
+          (De)-serializing Polymorphic objects with Jackson
+          </a>
+        
+      </div>
+  
+      <div class="post-nav-item post-nav-prev">
+          
+      </div>
+    </div> -->
+  
+
+
+    </div>
+
+    
+
+  </div>
+  <footer class="footer text-center">
+    <div id="bottom-inner">
+        <a class="bottom-item" href="/">Home</a> |
+        <a class="bottom-item" href="/archives">Blog</a> |
+        <a class="bottom-item" href="https://github.com/VR4J" target="_blank">GitHub</a> |
+        <a class="bottom-item" href="https://hexo.io" target="_blank">Powered by hexo</a>
+        <span class="bottom-item desktop-only">Somehow liking my gibberish? Use the <a class="brave" href="https://brave.com" target="_blank">Brave Browser</a> to tip me, or feed my caffeine addiction by <a class="buymeacoffee" href="https://www.buymeacoffee.com/vreijsenj" target="_blank"> buying me a Monster</a>.</span>
+    </div>
+</footer>
+  
+
+<script>
+  (function(window, document, undefined) {
+
+    var timer = null;
+
+    function returnTop() {
+      cancelAnimationFrame(timer);
+      timer = requestAnimationFrame(function fn() {
+        var oTop = document.body.scrollTop || document.documentElement.scrollTop;
+        if (oTop > 0) {
+          document.body.scrollTop = document.documentElement.scrollTop = oTop - 50;
+          timer = requestAnimationFrame(fn);
+        } else {
+          cancelAnimationFrame(timer);
+        }
+      });
+    }
+
+    var hearts = [];
+    window.requestAnimationFrame = (function() {
+      return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function(callback) {
+          setTimeout(callback, 1000 / 60);
+        }
+    })();
+    init();
+
+    function init() {
+      css(".heart{z-index:9999;width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: absolute;}.heart:after{top: -5px;}.heart:before{left: -5px;}");
+      attachEvent();
+      gameloop();
+      addMenuEvent();
+    }
+
+    function gameloop() {
+      for (var i = 0; i < hearts.length; i++) {
+        if (hearts[i].alpha <= 0) {
+          document.body.removeChild(hearts[i].el);
+          hearts.splice(i, 1);
+          continue;
+        }
+        hearts[i].y--;
+        hearts[i].scale += 0.004;
+        hearts[i].alpha -= 0.013;
+        hearts[i].el.style.cssText = "left:" + hearts[i].x + "px;top:" + hearts[i].y + "px;opacity:" + hearts[i].alpha + ";transform:scale(" + hearts[i].scale + "," + hearts[i].scale + ") rotate(45deg);background:" + hearts[i].color;
+      }
+      requestAnimationFrame(gameloop);
+    }
+
+    /**
+     * 给logo设置点击事件
+     * 
+     * - 回到顶部
+     * - 出现爱心
+     */
+    function attachEvent() {
+      var old = typeof window.onclick === "function" && window.onclick;
+      var logo = document.getElementById("logo");
+      if (logo) {
+        logo.onclick = function(event) {
+          returnTop();
+          old && old();
+          createHeart(event);
+        }
+      }
+      
+    }
+
+    function createHeart(event) {
+      var d = document.createElement("div");
+      d.className = "heart";
+      hearts.push({
+        el: d,
+        x: event.clientX - 5,
+        y: event.clientY - 5,
+        scale: 1,
+        alpha: 1,
+        color: randomColor()
+      });
+      document.body.appendChild(d);
+    }
+
+    function css(css) {
+      var style = document.createElement("style");
+      style.type = "text/css";
+      try {
+        style.appendChild(document.createTextNode(css));
+      } catch (ex) {
+        style.styleSheet.cssText = css;
+      }
+      document.getElementsByTagName('head')[0].appendChild(style);
+    }
+
+    function randomColor() {
+      // return "rgb(" + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + ")";
+      return "#F44336";
+    }
+
+    function addMenuEvent() {
+      var menu = document.getElementById('menu-main-post');
+      if (menu) {
+        var toc = document.getElementById('toc');
+        if (toc) {
+          menu.onclick = function() {
+            if (toc) {
+              if (toc.style.display == 'block') {
+                toc.style.display = 'none';
+              } else {
+                toc.style.display = 'block';
+              }
+            }
+          };
+        } else {
+          menu.style.display = 'none';
+        }
+      }
+    }
+
+  })(window, document);
+</script>
+
+  
+
+
+
+</body>
+</html>
