@@ -6,7 +6,7 @@
   <link href="https://blog.vreijsenj.nl/atom.xml" rel="self"/>
   
   <link href="https://blog.vreijsenj.nl/"/>
-  <updated>2022-03-29T08:42:34.573Z</updated>
+  <updated>2022-03-29T08:46:17.592Z</updated>
   <id>https://blog.vreijsenj.nl/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://blog.vreijsenj.nl/2022/03/29/preview-to-redis-om-spring-using-redis-json/"/>
     <id>https://blog.vreijsenj.nl/2022/03/29/preview-to-redis-om-spring-using-redis-json/</id>
     <published>2022-03-29T11:30:00.000Z</published>
-    <updated>2022-03-29T08:42:34.573Z</updated>
+    <updated>2022-03-29T08:46:17.592Z</updated>
     
     
     <summary type="html">After the announcement made last week about RedisJson 2.0 in RedisDays London 2022, lets have a look at how to use it in Spring Boot!</summary>
@@ -48,7 +48,7 @@
     <link href="https://blog.vreijsenj.nl/2022/03/03/de-serializing-polymorphic-objects-with-jackson/"/>
     <id>https://blog.vreijsenj.nl/2022/03/03/de-serializing-polymorphic-objects-with-jackson/</id>
     <published>2022-03-03T11:30:00.000Z</published>
-    <updated>2022-03-29T08:42:34.573Z</updated>
+    <updated>2022-03-29T08:46:17.592Z</updated>
     
     
     <summary type="html">Polymorphism is all cool and hipster, but how do you deserialize such structure coming from the outside world? Well, I so happen to have written this blogpost about it so click along!</summary>
@@ -75,7 +75,7 @@
     <link href="https://blog.vreijsenj.nl/2022/02/15/a-story-on-how-to-use-delay-queues/"/>
     <id>https://blog.vreijsenj.nl/2022/02/15/a-story-on-how-to-use-delay-queues/</id>
     <published>2022-02-15T11:30:00.000Z</published>
-    <updated>2022-03-29T08:42:34.573Z</updated>
+    <updated>2022-03-29T08:46:17.592Z</updated>
     
     
     <summary type="html">Ever heard about delay queues, and how they could be used? Join me in this real-life use-case where we will utilise delay queues to expose critical issues.</summary>
@@ -102,7 +102,7 @@
     <link href="https://blog.vreijsenj.nl/2022/02/01/using-the-java-kinesis-client-library-with-localstack/"/>
     <id>https://blog.vreijsenj.nl/2022/02/01/using-the-java-kinesis-client-library-with-localstack/</id>
     <published>2022-02-01T11:30:00.000Z</published>
-    <updated>2022-03-29T08:42:34.573Z</updated>
+    <updated>2022-03-29T08:46:17.592Z</updated>
     
     
     <summary type="html">Read or heard alot about Kinesis Data Streams, and eager to know how to actually use it? Come along and join me in this magical adventure of using the Kinesis Client Library and running it locally with LocalStack!</summary>
@@ -131,7 +131,7 @@
     <link href="https://blog.vreijsenj.nl/2022/01/17/what-i-love-about-lombok-and-the-builder-pattern/"/>
     <id>https://blog.vreijsenj.nl/2022/01/17/what-i-love-about-lombok-and-the-builder-pattern/</id>
     <published>2022-01-17T09:15:00.000Z</published>
-    <updated>2022-03-29T08:42:34.573Z</updated>
+    <updated>2022-03-29T08:46:17.592Z</updated>
     
     
     <summary type="html">We all know I&#39;m a big fan of Lombok, but why? Well here are a few reasons that will make sure you start using it today!</summary>
@@ -154,7 +154,7 @@
     <link href="https://blog.vreijsenj.nl/2021/12/28/using-spring-webflux-with-websockets-to-build-an-interactive-quiz/"/>
     <id>https://blog.vreijsenj.nl/2021/12/28/using-spring-webflux-with-websockets-to-build-an-interactive-quiz/</id>
     <published>2021-12-28T11:58:30.000Z</published>
-    <updated>2022-03-29T08:42:34.573Z</updated>
+    <updated>2022-03-29T08:46:17.592Z</updated>
     
     
     <summary type="html">Christmas; what a wonderfull time, wrapping paper in every store, lights and decorations on every corner what&#39;s not to like? Well here is the thing, I tend to get bored quite easily, which is why on this years family dinner; I tried something different!</summary>
