@@ -1,0 +1,350 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#202020"/>
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+  <meta name="title" content="Cloud Native Development: Are you prepared?">
+
+  
+    <meta name="publish_date" property="og:publish_date" content="2022-08-02T11:30:00+00:00">
+    <meta property="article:published_time" content="2022-08-02" />
+
+    
+      
+        <meta property="article:tag" content="Java 17" />
+      
+        <meta property="article:tag" content="Spring Boot" />
+      
+        <meta property="article:tag" content="Cloud Native" />
+      
+        <meta property="article:tag" content="GraalVM" />
+      
+        <meta property="article:tag" content="Spring Native" />
+      
+        <meta property="article:tag" content="Quarkus" />
+      
+    
+  
+  
+  
+    <meta name="description" content="Whether you like it or not, cloud native development is rising in popularity. Question is, are you prepared to adapt to it?" />
+    <meta property="og:description" content="Whether you like it or not, cloud native development is rising in popularity. Question is, are you prepared to adapt to it?" />
+    <meta property="twitter:description" content="Whether you like it or not, cloud native development is rising in popularity. Question is, are you prepared to adapt to it?" />
+  
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://blog.vreijsenj.nl/2022/08/02/cloud-native-development-are-you-prepared/" />
+  <meta property="og:title" content="Cloud Native Development: Are you prepared?" />
+
+  
+    <meta property="twitter:image" content="https://blog.vreijsenj.nl/images/cloud-native-development-are-you-prepared-social.png" />
+    <meta property="og:image" content="https://blog.vreijsenj.nl/images/cloud-native-development-are-you-prepared-social.png" />
+  
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="https://blog.vreijsenj.nl/2022/08/02/cloud-native-development-are-you-prepared/" />
+  <meta property="twitter:title" content="Cloud Native Development: Are you prepared?" />
+  
+  
+    <meta name="keywords" content="Java 17,Spring Boot,Cloud Native,GraalVM,Spring Native,Quarkus," />
+  
+
+  <meta name="author" content="Joery Vreijsen" />
+  
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <title> Cloud Native Development: Are you prepared?</title>
+  
+    <!-- stylesheets list from config.yml -->
+    
+      <link rel="stylesheet" href="/css/xoxo.css">
+    
+      <link rel="stylesheet" href="/css/post.css">
+    
+      <link rel="stylesheet" href="/css/footer.css">
+    
+      <link rel="stylesheet" href="/css/contact.css">
+    
+  
+  <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.6/build/pure-min.css" integrity="sha384-Uu6IeWbM+gzNVXJcM9XV3SohHtmWE+3VGi496jvgX1jyvDTXfdK+rfZc8C1Aehk5" crossorigin="anonymous">
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="J. Vreijsen" type="application/atom+xml">
+</head>
+
+
+<body>
+  <div class="nav-container">
+    <nav class="home-menu pure-menu pure-menu-horizontal">
+  <a class="pure-menu-heading" href="/">
+    <img class="avatar" src="https://blog.vreijsenj.nl/images/logo.jpeg">
+    <span class="title">J. Vreijsen</span>
+  </a>
+
+  <ul class="pure-menu-list clearfix">
+      
+          
+            <li class="pure-menu-item"><a href="/" class="pure-menu-link">Home</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/about" class="pure-menu-link">About</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/tags" class="pure-menu-link">Tags</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/archives" class="pure-menu-link">Archives</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/contact" class="pure-menu-link">Contact</a></li>
+          
+      
+  </ul>
+   
+</nav>
+  </div>
+
+  <div class="container" id="content-outer">
+    <div class="inner" id="content-inner">
+      <div class="post-container">
+  <article class="post" id="post">
+    <header class="post-header text-center">
+      <h1 class="title">
+        Cloud Native Development: Are you prepared?
+      </h1>
+      <span>
+        
+        <time class="time" datetime="2022-08-02T11:30:00.000Z">
+        2022-08-02
+      </time>
+        
+      </span>
+      <span class="slash">/</span>
+      <span class="post-meta">
+      <span class="post-tags">
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Cloud-Native/" rel="tag">Cloud Native</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GraalVM/" rel="tag">GraalVM</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java-17/" rel="tag">Java 17</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Quarkus/" rel="tag">Quarkus</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Boot/" rel="tag">Spring Boot</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Native/" rel="tag">Spring Native</a></li></ul>
+      </span>
+    </span>
+      <span class="slash">/</span>
+      <span class="read">Reading Time: 5 Minute</span>
+    </header>
+
+    <div class="post-content">
+      <p>Let’s first establish a common understanding on the term ‘Cloud Native’, as it tends to differ from person to person… or even from     day to day.</p>
+<blockquote>
+<p>Cloud-native is a modern approach to building and running software applications that exploits the flexibility, scalability, and resilience of cloud computing.</p>
+</blockquote>
+<p>Alright so in other words, to become cloud-native, to fully exploit the felxibility, scalability, and resilience of cloud computing, we need to change our approach in which we are building and running our software.</p>
+<h3 id="What’s-so-different"><a href="#What’s-so-different" class="headerlink" title="What’s so different?"></a>What’s so different?</h3><p>When you develop your typical Java application, you know it’s going to run in our beloved Java Virtual Machine (JVM). Our magic box for translating Java bytecode to machine specific code, and managing our memory consumption. Apart from the that, it has some other smart tricks up its sleeves to allow our code to run as fast and efficient as possible, think about <a target="_blank" rel="noopener" href="https://devcenter.heroku.com/articles/warming-up-a-java-process">warmup</a>, <a target="_blank" rel="noopener" href="https://www.eginnovations.com/blog/what-is-garbage-collection-java">garabage collection</a>, etc.</p>
+<p>On the downside, these smart tricks don’t come for free, we all know the JVM is quite slow in its start up and uses additional memory and cpu to perform for example the garbage collection tasks. </p>
+<p>When doing Cloud Native Development in Java we have to compile our application directly into a binary file ready to be executed on the targets machines bytecode, no Java Virtual Machine involved.</p>
+<h3 id="What’s-the-benefit"><a href="#What’s-the-benefit" class="headerlink" title="What’s the benefit?"></a>What’s the benefit?</h3><p>When having a binary specificly build for your targets host, it’s lightning fast in startup allowing to fully benefit from the scalability cloud computing offers. Apart from that there is no need for a magic box like the JVM to translate Java bytecode to machine code on the fly, we don’t need any smart tricks to keep part of our machine bytecode in a cache for faster executions (warmup). </p>
+<p>Down the line we could say that, by erraticating the need for the JVM, we significantly decrease both the startup time as well as the overall memory footprint of the application.</p>
+<h3 id="How-does-it-work"><a href="#How-does-it-work" class="headerlink" title="How does it work?"></a>How does it work?</h3><p>How do we build this lightning fast binary that you so highly speak of, you ask? Well, let me introduce you to a buddy of mine, <a target="_blank" rel="noopener" href="https://www.graalvm.org/">GraalVM</a>.</p>
+<p>GraalVM is a Java VM that allows for <em>ahead-of-time compilation</em>, which is best explained by this little snippet from <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Ahead-of-time_compilation">wikipedia</a>.</p>
+<blockquote>
+<p>The act of compiling a higher-level programming language such as C or C++, or an intermediate representation such as Java bytecode, into a native (system-dependent) machine code so that the resulting binary file can execute natively.</p>
+</blockquote>
+<p>So in short, GraalVM allows us to turn our Java application into a single binary file that can be executed natively.</p>
+<h3 id="What’s-the-catch"><a href="#What’s-the-catch" class="headerlink" title="What’s the catch?"></a>What’s the catch?</h3><p>You’ll probably be wondering well.. that sounds like sunshine and rainbows but what’s the catch here? Well as good as a buddy GraalVM is, it tends to be a bit difficult to handle. With the use of <em>ahead-of-time compilation</em> there are some restrictions, like the use of reflection in Java. Reflection allows the Java application to “introspect” upon itself during runtime, which simply will not be possible if you already compiled everything upfront into a binary file.</p>
+<p>As reflection is deeply nested into the core of most Java applications; think about serialization, or dependency injection, it can be quite difficult to eliminate it completely. </p>
+<p>On the upside, we already see movement in the opensource world where projects are starting to move away from using reflection, or finding workarounds specifically for these kind of purposes. </p>
+<p><a target="_blank" rel="noopener" href="https://quarkus.io/">Quarkus</a> for example is one of, if not the biggest, driver within the Java world that embraces the “container first” principle, tailoring applications for GraalVM. Spring Boot is slowly catching on as well with its own project called <a target="_blank" rel="noopener" href="https://github.com/spring-projects-experimental/spring-native">Spring Native</a>.</p>
+<p>With the arrival of <em>ahead-of-time compilation</em> we do have to admit that compiling an application with Java takes significantly longer. Building the full native image can range from 5 minutes up to 25 minutes, depending on how many dependencies are involved, and how big of an application you are building.</p>
+<p>While this ofcourse does not take away the fact that you can still run your good old jar file for local testing, it does not fully represent how the binary executable will run or behave.</p>
+<h3 id="What’s-your-verdict"><a href="#What’s-your-verdict" class="headerlink" title="What’s your verdict?"></a>What’s your verdict?</h3><p>While I strongly believe that cloud native development will be a thing in the future, there is also alot of work that still needs to be done to make it more developer friendly. Currently it requires alot of knowledge on the internals of GraalVM, to fully be able to use it in your own project, and requires lots of fiddling with different options to get the result you want.</p>
+<p>I’m sure projects like Quarkus and Spring Native will soon make this a thing of the past, so for now <strong>consider cloud-native development, but be sure to know what you’re in for!</strong></p>
+
+    </div>
+  </article>
+  <div class="toc-container">
+    
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">Chapters</strong>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#What%E2%80%99s-so-different"><span class="toc-text">What’s so different?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#What%E2%80%99s-the-benefit"><span class="toc-text">What’s the benefit?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#How-does-it-work"><span class="toc-text">How does it work?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#What%E2%80%99s-the-catch"><span class="toc-text">What’s the catch?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#What%E2%80%99s-your-verdict"><span class="toc-text">What’s your verdict?</span></a></li></ol>
+  </div>
+
+
+  </div>
+</div>
+<div class="copyright">
+
+</div>
+<div class="share" style="width: 100%;">
+  
+</div>
+
+  
+    <!-- <div class="post-nav">
+      <div class="post-nav-item post-nav-next">
+        
+          <span>〈 </span>
+          <a href="/2022/03/29/preview-to-redis-om-spring-using-redis-json/" rel="next" title="Preview to Redis OM Spring using RedisJson">
+          Preview to Redis OM Spring using RedisJson
+          </a>
+        
+      </div>
+  
+      <div class="post-nav-item post-nav-prev">
+          
+      </div>
+    </div> -->
+  
+
+
+    </div>
+
+    
+
+  </div>
+  <footer class="footer text-center">
+    <div id="bottom-inner">
+        <a class="bottom-item" href="/">Home</a> |
+        <a class="bottom-item" href="/archives">Blog</a> |
+        <a class="bottom-item" href="https://github.com/VR4J" target="_blank">GitHub</a> |
+        <a class="bottom-item" href="https://hexo.io" target="_blank">Powered by hexo</a>
+        <span class="bottom-item desktop-only">Somehow liking my gibberish? Use the <a class="brave" href="https://brave.com" target="_blank">Brave Browser</a> to tip me, or feed my caffeine addiction by <a class="buymeacoffee" href="https://www.buymeacoffee.com/vreijsenj" target="_blank"> buying me a Monster</a>.</span>
+    </div>
+</footer>
+  
+
+<script>
+  (function(window, document, undefined) {
+
+    var timer = null;
+
+    function returnTop() {
+      cancelAnimationFrame(timer);
+      timer = requestAnimationFrame(function fn() {
+        var oTop = document.body.scrollTop || document.documentElement.scrollTop;
+        if (oTop > 0) {
+          document.body.scrollTop = document.documentElement.scrollTop = oTop - 50;
+          timer = requestAnimationFrame(fn);
+        } else {
+          cancelAnimationFrame(timer);
+        }
+      });
+    }
+
+    var hearts = [];
+    window.requestAnimationFrame = (function() {
+      return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function(callback) {
+          setTimeout(callback, 1000 / 60);
+        }
+    })();
+    init();
+
+    function init() {
+      css(".heart{z-index:9999;width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: absolute;}.heart:after{top: -5px;}.heart:before{left: -5px;}");
+      attachEvent();
+      gameloop();
+      addMenuEvent();
+    }
+
+    function gameloop() {
+      for (var i = 0; i < hearts.length; i++) {
+        if (hearts[i].alpha <= 0) {
+          document.body.removeChild(hearts[i].el);
+          hearts.splice(i, 1);
+          continue;
+        }
+        hearts[i].y--;
+        hearts[i].scale += 0.004;
+        hearts[i].alpha -= 0.013;
+        hearts[i].el.style.cssText = "left:" + hearts[i].x + "px;top:" + hearts[i].y + "px;opacity:" + hearts[i].alpha + ";transform:scale(" + hearts[i].scale + "," + hearts[i].scale + ") rotate(45deg);background:" + hearts[i].color;
+      }
+      requestAnimationFrame(gameloop);
+    }
+
+    /**
+     * 给logo设置点击事件
+     * 
+     * - 回到顶部
+     * - 出现爱心
+     */
+    function attachEvent() {
+      var old = typeof window.onclick === "function" && window.onclick;
+      var logo = document.getElementById("logo");
+      if (logo) {
+        logo.onclick = function(event) {
+          returnTop();
+          old && old();
+          createHeart(event);
+        }
+      }
+      
+    }
+
+    function createHeart(event) {
+      var d = document.createElement("div");
+      d.className = "heart";
+      hearts.push({
+        el: d,
+        x: event.clientX - 5,
+        y: event.clientY - 5,
+        scale: 1,
+        alpha: 1,
+        color: randomColor()
+      });
+      document.body.appendChild(d);
+    }
+
+    function css(css) {
+      var style = document.createElement("style");
+      style.type = "text/css";
+      try {
+        style.appendChild(document.createTextNode(css));
+      } catch (ex) {
+        style.styleSheet.cssText = css;
+      }
+      document.getElementsByTagName('head')[0].appendChild(style);
+    }
+
+    function randomColor() {
+      // return "rgb(" + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + ")";
+      return "#F44336";
+    }
+
+    function addMenuEvent() {
+      var menu = document.getElementById('menu-main-post');
+      if (menu) {
+        var toc = document.getElementById('toc');
+        if (toc) {
+          menu.onclick = function() {
+            if (toc) {
+              if (toc.style.display == 'block') {
+                toc.style.display = 'none';
+              } else {
+                toc.style.display = 'block';
+              }
+            }
+          };
+        } else {
+          menu.style.display = 'none';
+        }
+      }
+    }
+
+  })(window, document);
+</script>
+
+  
+
+
+
+</body>
+</html>
