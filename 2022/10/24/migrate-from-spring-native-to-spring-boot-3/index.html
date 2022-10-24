@@ -1,0 +1,359 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#202020"/>
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+  <meta name="title" content="Migrating from Spring Native to Spring Boot 3">
+
+  
+    <meta name="publish_date" property="og:publish_date" content="2022-10-24T15:00:00+00:00">
+    <meta property="article:published_time" content="2022-10-24" />
+
+    
+      
+        <meta property="article:tag" content="GraalVM" />
+      
+        <meta property="article:tag" content="Spring Native" />
+      
+        <meta property="article:tag" content="Spring Boot 3" />
+      
+    
+  
+  
+  
+    <meta name="description" content="Spring Boot 3 will support native compilation out of the box, we look at how to migrate our project from the Spring Native library." />
+    <meta property="og:description" content="Spring Boot 3 will support native compilation out of the box, we look at how to migrate our project from the Spring Native library." />
+    <meta property="twitter:description" content="Spring Boot 3 will support native compilation out of the box, we look at how to migrate our project from the Spring Native library." />
+  
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://blog.vreijsenj.nl/2022/10/24/migrate-from-spring-native-to-spring-boot-3/" />
+  <meta property="og:title" content="Migrating from Spring Native to Spring Boot 3" />
+
+  
+    <meta property="twitter:image" content="https://blog.vreijsenj.nl/images/migrating-spring-native-to-spring-boot-3.jpg" />
+    <meta property="og:image" content="https://blog.vreijsenj.nl/images/migrating-spring-native-to-spring-boot-3.jpg" />
+  
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="https://blog.vreijsenj.nl/2022/10/24/migrate-from-spring-native-to-spring-boot-3/" />
+  <meta property="twitter:title" content="Migrating from Spring Native to Spring Boot 3" />
+  
+  
+    <meta name="keywords" content="GraalVM,Spring Native,Spring Boot 3," />
+  
+
+  <meta name="author" content="Joery Vreijsen" />
+  
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <title> Migrating from Spring Native to Spring Boot 3</title>
+  
+    <!-- stylesheets list from config.yml -->
+    
+      <link rel="stylesheet" href="/css/xoxo.css">
+    
+      <link rel="stylesheet" href="/css/post.css">
+    
+      <link rel="stylesheet" href="/css/footer.css">
+    
+      <link rel="stylesheet" href="/css/contact.css">
+    
+  
+  <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.6/build/pure-min.css" integrity="sha384-Uu6IeWbM+gzNVXJcM9XV3SohHtmWE+3VGi496jvgX1jyvDTXfdK+rfZc8C1Aehk5" crossorigin="anonymous">
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="J. Vreijsen" type="application/atom+xml">
+</head>
+
+
+<body>
+  <div class="nav-container">
+    <nav class="home-menu pure-menu pure-menu-horizontal">
+  <a class="pure-menu-heading" href="/">
+    <img class="avatar" src="https://blog.vreijsenj.nl/images/logo.jpeg">
+    <span class="title">J. Vreijsen</span>
+  </a>
+
+  <ul class="pure-menu-list clearfix">
+      
+          
+            <li class="pure-menu-item"><a href="/" class="pure-menu-link">Home</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/about" class="pure-menu-link">About</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/tags" class="pure-menu-link">Tags</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/archives" class="pure-menu-link">Archives</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/contact" class="pure-menu-link">Contact</a></li>
+          
+      
+  </ul>
+   
+</nav>
+  </div>
+
+  <div class="container" id="content-outer">
+    <div class="inner" id="content-inner">
+      <div class="post-container">
+  <article class="post" id="post">
+    <header class="post-header text-center">
+      <h1 class="title">
+        Migrating from Spring Native to Spring Boot 3
+      </h1>
+      <span>
+        
+        <time class="time" datetime="2022-10-24T15:00:00.000Z">
+        2022-10-24
+      </time>
+        
+      </span>
+      <span class="slash">/</span>
+      <span class="post-meta">
+      <span class="post-tags">
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GraalVM/" rel="tag">GraalVM</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Boot-3/" rel="tag">Spring Boot 3</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Native/" rel="tag">Spring Native</a></li></ul>
+      </span>
+    </span>
+      <span class="slash">/</span>
+      <span class="read">Reading Time: 5 Minute</span>
+    </header>
+
+    <div class="post-content">
+      <h2 id="History-Lesson"><a href="#History-Lesson" class="headerlink" title="History Lesson"></a>History Lesson</h2><p>It was the year 2021.. wait yes that was just last year.. when Spring announced it would be starting to support compilation to native images (<a target="_blank" rel="noopener" href="https://spring.io/blog/2021/03/11/announcing-spring-native-beta">proof</a>). Spring launched the <code>spring-native</code> project in beta-support for everyone that wanted to have a lightning fast spring-boot application compiled with GraalVM that could achieve startup times sub 100 ms!</p>
+<p>We are now reaching a new milestone in this journey as Spring announced it will move the support for compilation to native images to its General Availability with Spring Framework 6 and Spring Boot 3 (<a target="_blank" rel="noopener" href="https://spring.io/blog/2022/09/26/native-support-in-spring-boot-3-0-0-m5">more proof</a>).  </p>
+<p>You as hyped as I am? You need a second to catch your breath? Good, because I couldn’t wait either to migrate from the spring-native beta to Spring Boot 3. Since migrating is never an easy task, I’ve listed down the hurdles I came across in the process so you can get a head start on this.</p>
+<p><strong>Keep in mind that Spring Boot 3 is to be released in <strong>late November 2022</strong>, so we are working with a milestone release (3.0.0-M5) here.</strong></p>
+<h2 id="Let’s-get-started"><a href="#Let’s-get-started" class="headerlink" title="Let’s get started"></a>Let’s get started</h2><p>When we try to simply change the Spring Boot version to 3.0.0-M5 in our build.gradle file we get the following error:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">- Plugin Repositories (could not resolve plugin artifact <span class="string">&#x27;org.springframework.boot:org.springframework.boot.gradle.plugin:3.0.0-M5&#x27;</span>)</span><br><span class="line">  Searched <span class="keyword">in</span> the following repositories:</span><br><span class="line">    maven(https://repo.spring.io/release)</span><br><span class="line">    MavenRepo</span><br><span class="line">    Gradle Central Plugin Repository</span><br></pre></td></tr></table></figure>
+
+<p>As Spring Boot 3.0.0-M5 is a milestone release, we need to include the milestone repository in our repositories section.</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">repositories &#123;</span><br><span class="line">	maven &#123; url <span class="string">&#x27;https://repo.spring.io/milestone&#x27;</span> &#125;</span><br><span class="line">  mavenCentral()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>When you are using any Spring Boot plugins, you should also change the repositories for plugins in the settings.gradle file.</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">pluginManagement &#123;</span><br><span class="line">	repositories &#123;</span><br><span class="line">		maven &#123; url <span class="string">&#x27;https://repo.spring.io/milestone&#x27;</span> &#125;</span><br><span class="line">		mavenCentral()</span><br><span class="line">		gradlePluginPortal()</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>So far so good, let’s see what we get when we build our application.</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Plugin [id: <span class="string">&#x27;org.springframework.experimental.aot&#x27;</span>, version: <span class="string">&#x27;0.11.4&#x27;</span>] was not found <span class="keyword">in</span> any of the following sources:</span><br></pre></td></tr></table></figure>
+
+<p>Experimental? No longer! Since it’s now in Spring Boot 3.0.0 we can get rid of this plugin.</p>
+<p>Let’s see where that gets us..</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; Task :compileJava FAILED</span><br><span class="line">error: package org.springframework.nativex.hint does not exist</span><br></pre></td></tr></table></figure>
+
+<p>Alright alright, nothing we can’t handle. When building a Java application and compiling it with GraalVM we often need to play around with some GraalVM settings in the form of some CLI options that we need to pass along. </p>
+<p>Previously this could’ve been done by using @NativeHint annotations in your codebase, however this is no longer available in the Spring Boot 3 release. </p>
+<p>Luckily we can still modify our GraalVM build command depending on which build method your application uses. </p>
+<ol>
+<li>We can compile our application with GraalVM directly into a Docker image by using Paketo. </li>
+<li>We can use the <a target="_blank" rel="noopener" href="https://graalvm.github.io/native-build-tools/latest/index.html">Native Build Tools</a> to compile our application into a binary.</li>
+</ol>
+<p>Either way there is still a way to provide those necessary build options to GraalVM. </p>
+<h3 id="Paketo"><a href="#Paketo" class="headerlink" title="Paketo"></a>Paketo</h3><p>When using Paketo we can add the build options using an environment variable that is used during the build process:</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">bootBuildImage &#123;</span><br><span class="line">	builder = <span class="string">&#x27;paketobuildpacks/builder:base&#x27;</span></span><br><span class="line">	environment = [</span><br><span class="line">	   <span class="string">&#x27;BP_NATIVE_IMAGE&#x27;</span>: <span class="string">&#x27;true&#x27;</span>,</span><br><span class="line">	   <span class="string">&#x27;BP_NATIVE_IMAGE_BUILD_ARGUMENTS&#x27;</span>: <span class="string">&#x27;--initialize-at-build-time=ch.qos.logback,org.slf4j.impl.StaticLoggerBinder,org.slf4j.LoggerFactory,org.slf4j.MDC --initialize-at-run-time=io.netty.handler.ssl.BouncyCastleAlpnSslUtils&#x27;</span> ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Native-Build-Tools"><a href="#Native-Build-Tools" class="headerlink" title="Native Build Tools"></a>Native Build Tools</h3><p>When using the Native Build Tools you can add it by using the <a target="_blank" rel="noopener" href="https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html#_native_image_options">NativeImageOptions</a></p>
+<h2 id="Results"><a href="#Results" class="headerlink" title="Results"></a>Results</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">BUILD SUCCESSFUL <span class="keyword">in</span> 4s</span><br><span class="line">6 actionable tasks: 6 executed</span><br></pre></td></tr></table></figure>
+
+<p>One down, one to go! Let’s try building our native image with <code>./gradlew clean bootBuildImage</code>.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Successfully built image &#x27;docker.io/library/spring-boot-native-image:0.0.1-SNAPSHOT&#x27;</span><br><span class="line"></span><br><span class="line">BUILD SUCCESSFUL in 2m 43s</span><br><span class="line">6 actionable tasks: 6 executed</span><br></pre></td></tr></table></figure>
+
+<p>Look at that, we’ve got our Spring Boot 3.0.0-M5 project <strong>successfully</strong> built  into a GraalVM native image! 🎉</p>
+<p>That’s all folks 🤘 it was actually pretty easy..</p>
+
+    </div>
+  </article>
+  <div class="toc-container">
+    
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">Chapters</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#History-Lesson"><span class="toc-text">History Lesson</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Let%E2%80%99s-get-started"><span class="toc-text">Let’s get started</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Paketo"><span class="toc-text">Paketo</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Native-Build-Tools"><span class="toc-text">Native Build Tools</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Results"><span class="toc-text">Results</span></a></li></ol>
+  </div>
+
+
+  </div>
+</div>
+<div class="copyright">
+
+</div>
+<div class="share" style="width: 100%;">
+  
+</div>
+
+  
+    <!-- <div class="post-nav">
+      <div class="post-nav-item post-nav-next">
+        
+          <span>〈 </span>
+          <a href="/2022/08/02/cloud-native-development-are-you-prepared/" rel="next" title="Cloud Native Development: Are you prepared?">
+          Cloud Native Development: Are you prepared?
+          </a>
+        
+      </div>
+  
+      <div class="post-nav-item post-nav-prev">
+          
+      </div>
+    </div> -->
+  
+
+
+    </div>
+
+    
+
+  </div>
+  <footer class="footer text-center">
+    <div id="bottom-inner">
+        <a class="bottom-item" href="/">Home</a> |
+        <a class="bottom-item" href="/archives">Blog</a> |
+        <a class="bottom-item" href="https://github.com/VR4J" target="_blank">GitHub</a> |
+        <a class="bottom-item" href="https://hexo.io" target="_blank">Powered by hexo</a>
+        <span class="bottom-item desktop-only">Somehow liking my gibberish? Use the <a class="brave" href="https://brave.com" target="_blank">Brave Browser</a> to tip me, or feed my caffeine addiction by <a class="buymeacoffee" href="https://www.buymeacoffee.com/vreijsenj" target="_blank"> buying me a Monster</a>.</span>
+    </div>
+</footer>
+  
+
+<script>
+  (function(window, document, undefined) {
+
+    var timer = null;
+
+    function returnTop() {
+      cancelAnimationFrame(timer);
+      timer = requestAnimationFrame(function fn() {
+        var oTop = document.body.scrollTop || document.documentElement.scrollTop;
+        if (oTop > 0) {
+          document.body.scrollTop = document.documentElement.scrollTop = oTop - 50;
+          timer = requestAnimationFrame(fn);
+        } else {
+          cancelAnimationFrame(timer);
+        }
+      });
+    }
+
+    var hearts = [];
+    window.requestAnimationFrame = (function() {
+      return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function(callback) {
+          setTimeout(callback, 1000 / 60);
+        }
+    })();
+    init();
+
+    function init() {
+      css(".heart{z-index:9999;width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: absolute;}.heart:after{top: -5px;}.heart:before{left: -5px;}");
+      attachEvent();
+      gameloop();
+      addMenuEvent();
+    }
+
+    function gameloop() {
+      for (var i = 0; i < hearts.length; i++) {
+        if (hearts[i].alpha <= 0) {
+          document.body.removeChild(hearts[i].el);
+          hearts.splice(i, 1);
+          continue;
+        }
+        hearts[i].y--;
+        hearts[i].scale += 0.004;
+        hearts[i].alpha -= 0.013;
+        hearts[i].el.style.cssText = "left:" + hearts[i].x + "px;top:" + hearts[i].y + "px;opacity:" + hearts[i].alpha + ";transform:scale(" + hearts[i].scale + "," + hearts[i].scale + ") rotate(45deg);background:" + hearts[i].color;
+      }
+      requestAnimationFrame(gameloop);
+    }
+
+    /**
+     * 给logo设置点击事件
+     * 
+     * - 回到顶部
+     * - 出现爱心
+     */
+    function attachEvent() {
+      var old = typeof window.onclick === "function" && window.onclick;
+      var logo = document.getElementById("logo");
+      if (logo) {
+        logo.onclick = function(event) {
+          returnTop();
+          old && old();
+          createHeart(event);
+        }
+      }
+      
+    }
+
+    function createHeart(event) {
+      var d = document.createElement("div");
+      d.className = "heart";
+      hearts.push({
+        el: d,
+        x: event.clientX - 5,
+        y: event.clientY - 5,
+        scale: 1,
+        alpha: 1,
+        color: randomColor()
+      });
+      document.body.appendChild(d);
+    }
+
+    function css(css) {
+      var style = document.createElement("style");
+      style.type = "text/css";
+      try {
+        style.appendChild(document.createTextNode(css));
+      } catch (ex) {
+        style.styleSheet.cssText = css;
+      }
+      document.getElementsByTagName('head')[0].appendChild(style);
+    }
+
+    function randomColor() {
+      // return "rgb(" + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + ")";
+      return "#F44336";
+    }
+
+    function addMenuEvent() {
+      var menu = document.getElementById('menu-main-post');
+      if (menu) {
+        var toc = document.getElementById('toc');
+        if (toc) {
+          menu.onclick = function() {
+            if (toc) {
+              if (toc.style.display == 'block') {
+                toc.style.display = 'none';
+              } else {
+                toc.style.display = 'block';
+              }
+            }
+          };
+        } else {
+          menu.style.display = 'none';
+        }
+      }
+    }
+
+  })(window, document);
+</script>
+
+  
+
+
+
+</body>
+</html>
