@@ -1,0 +1,363 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#202020"/>
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+  <meta name="title" content="Using the Java Kinesis Producer Library (KPL) with LocalStack">
+
+  
+    <meta name="publish_date" property="og:publish_date" content="2022-11-18T11:30:00+00:00">
+    <meta property="article:published_time" content="2022-11-18" />
+
+    
+      
+        <meta property="article:tag" content="Java 17" />
+      
+        <meta property="article:tag" content="Spring Boot" />
+      
+        <meta property="article:tag" content="AWS" />
+      
+        <meta property="article:tag" content="Kinesis" />
+      
+        <meta property="article:tag" content="LocalStack" />
+      
+    
+  
+  
+  
+    <meta name="description" content="The Kinesis Producer Library offers us a great abstraction with a lot of additional configuration options, but setting it up with LocalStack can be tricky. Let&#39;s look at how to do it right." />
+    <meta property="og:description" content="The Kinesis Producer Library offers us a great abstraction with a lot of additional configuration options, but setting it up with LocalStack can be tricky. Let&#39;s look at how to do it right." />
+    <meta property="twitter:description" content="The Kinesis Producer Library offers us a great abstraction with a lot of additional configuration options, but setting it up with LocalStack can be tricky. Let&#39;s look at how to do it right." />
+  
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://blog.vreijsenj.nl/2022/11/18/using-the-java-kinesis-producer-library-kpl-with-localstack/" />
+  <meta property="og:title" content="Using the Java Kinesis Producer Library (KPL) with LocalStack" />
+
+  
+    <meta property="twitter:image" content="https://blog.vreijsenj.nl/images/using-the-java-kinesis-producer-library-kpl-with-localstack-social.png" />
+    <meta property="og:image" content="https://blog.vreijsenj.nl/images/using-the-java-kinesis-producer-library-kpl-with-localstack-social.png" />
+  
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="https://blog.vreijsenj.nl/2022/11/18/using-the-java-kinesis-producer-library-kpl-with-localstack/" />
+  <meta property="twitter:title" content="Using the Java Kinesis Producer Library (KPL) with LocalStack" />
+  
+  
+    <meta name="keywords" content="Java 17,Spring Boot,AWS,Kinesis,LocalStack," />
+  
+
+  <meta name="author" content="Joery Vreijsen" />
+  
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <title> Using the Java Kinesis Producer Library (KPL) with LocalStack</title>
+  
+    <!-- stylesheets list from config.yml -->
+    
+      <link rel="stylesheet" href="/css/xoxo.css">
+    
+      <link rel="stylesheet" href="/css/post.css">
+    
+      <link rel="stylesheet" href="/css/footer.css">
+    
+      <link rel="stylesheet" href="/css/contact.css">
+    
+  
+  <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.6/build/pure-min.css" integrity="sha384-Uu6IeWbM+gzNVXJcM9XV3SohHtmWE+3VGi496jvgX1jyvDTXfdK+rfZc8C1Aehk5" crossorigin="anonymous">
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="J. Vreijsen" type="application/atom+xml">
+</head>
+
+
+<body>
+  <div class="nav-container">
+    <nav class="home-menu pure-menu pure-menu-horizontal">
+  <a class="pure-menu-heading" href="/">
+    <img class="avatar" src="https://blog.vreijsenj.nl/images/logo.jpeg">
+    <span class="title">J. Vreijsen</span>
+  </a>
+
+  <ul class="pure-menu-list clearfix">
+      
+          
+            <li class="pure-menu-item"><a href="/" class="pure-menu-link">Home</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/about" class="pure-menu-link">About</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/tags" class="pure-menu-link">Tags</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/archives" class="pure-menu-link">Archives</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/contact" class="pure-menu-link">Contact</a></li>
+          
+      
+  </ul>
+   
+</nav>
+  </div>
+
+  <div class="container" id="content-outer">
+    <div class="inner" id="content-inner">
+      <div class="post-container">
+  <article class="post" id="post">
+    <header class="post-header text-center">
+      <h1 class="title">
+        Using the Java Kinesis Producer Library (KPL) with LocalStack
+      </h1>
+      <span>
+        
+        <time class="time" datetime="2022-11-18T11:30:00.000Z">
+        2022-11-18
+      </time>
+        
+      </span>
+      <span class="slash">/</span>
+      <span class="post-meta">
+      <span class="post-tags">
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/AWS/" rel="tag">AWS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java-17/" rel="tag">Java 17</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Kinesis/" rel="tag">Kinesis</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LocalStack/" rel="tag">LocalStack</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Boot/" rel="tag">Spring Boot</a></li></ul>
+      </span>
+    </span>
+      <span class="slash">/</span>
+      <span class="read">Reading Time: 6 Minute</span>
+    </header>
+
+    <div class="post-content">
+      <p>Yes! LocalStack, as you know I’m a <strong>huge</strong> fan; being able to run AWS Cloud Services locally is a great way to help test systems that heavily rely on them. Not a fan yet? No worries there’s still time, have a look at their website: <a target="_blank" rel="noopener" href="https://localstack.cloud/">https://localstack.cloud/</a>.</p>
+<p>Only interested in the code? Complete working example is available on <a target="_blank" rel="noopener" href="https://github.com/VR4J/kinesis-producer-library-localstack">Github</a></p>
+<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>Part of the reason Kinesis is so great, is that it is very accessible, either by a few clicks in the AWS Console, or the use of the AWS SDK. The latter however is sometimes a bit of a handful to get setup, but once done the many abstraction layers like the Kinesis Producer Library will give you a lot of ‘free’ configuration options, and default implementations. We can think of sending messages in batches based on the batch size, or the batch count, preventing our system to send enormous amounts of data over the line in one request.</p>
+<p>The Kinesis Producer Library will not work out of the box with LocalStack, but luckily we can fix this with just a few subtle changes.</p>
+<p>Ready? Let’s dive into it!</p>
+<h2 id="Running-LocalStack"><a href="#Running-LocalStack" class="headerlink" title="Running LocalStack"></a>Running LocalStack</h2><p>LocalStack offers us a Docker image with which we can simply run the necessary AWS services locally.</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --rm -it -e SERVICES=kinesis,cloudwatch,dynamodb -p 4566:4566 -p 4510-4559:4510-4559 localstack/localstack</span><br></pre></td></tr></table></figure>
+
+<p>More info about this command can be found on the documentation page:<br><a target="_blank" rel="noopener" href="https://docs.localstack.cloud/get-started/#docker">https://docs.localstack.cloud/get-started/#docker</a></p>
+<p>When our container is up and running we can use the <code>awslocal</code> cli to create a Kinesis Stream.</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awslocal kinesis create-stream --stream-name some-data-stream --shard-count 2</span><br></pre></td></tr></table></figure>
+
+<h2 id="Using-the-Kinesis-Producer-Library-KPL"><a href="#Using-the-Kinesis-Producer-Library-KPL" class="headerlink" title="Using the Kinesis Producer Library (KPL)"></a>Using the Kinesis Producer Library (KPL)</h2><p>When we add the Kinesis Producer Library in our Spring Boot application, we need to override a few properties to make sure it connects to our local container.</p>
+<p>We can create the following configuration class.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Profile(&quot;localstack&quot;)</span></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@RequiredArgsConstructor</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LocalStackClientConfiguration</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> KinesisProducer <span class="title">kinesisProducer</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        KinesisProducerConfiguration configuration = <span class="keyword">new</span> KinesisProducerConfiguration()</span><br><span class="line">            .setKinesisEndpoint(<span class="string">&quot;localhost&quot;</span>)</span><br><span class="line">            .setKinesisPort(<span class="number">4566</span>)</span><br><span class="line">            .setCloudwatchEndpoint(<span class="string">&quot;localhost&quot;</span>)</span><br><span class="line">            .setCloudwatchPort(<span class="number">4566</span>)</span><br><span class="line">            .setRegion(<span class="string">&quot;us-east-1&quot;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> KinesisProducer(configuration);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Let’s explain.</p>
+<p>We add the <code>@Profile(&quot;localstack&quot;)</code> annotation to make sure we only connect to our local container when we run our application with the <code>localstack</code> profile.</p>
+<p>We override the endpoint and ports to match the ones exposed by our LocalStack container. </p>
+<p>Since LocalStack by default registers all resources in the <strong>us-east-1</strong> region, we override it to make sure our stream can be found.</p>
+<p>Sounds good? Let’s try and send a message to our stream.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@RequiredArgsConstructor</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">KinesisSender</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> KinesisProducer producer;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@PostConstruct</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        ByteBuffer payload = ByteBuffer.wrap(<span class="string">&quot;&#123; &#x27;data&#x27;: &#x27;Something important.&#x27; &#125;&quot;</span>.getBytes(StandardCharsets.UTF_8));</span><br><span class="line">        producer.addUserRecord(<span class="string">&quot;some-data-stream&quot;</span>, <span class="string">&quot;partitionKey&quot;</span>, payload).get();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Oh oh..</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">libc++abi: terminating with uncaught exception of <span class="built_in">type</span> boost::wrapexcept&lt;boost::exception_detail::error_info_injector&lt;boost::<span class="built_in">log</span>::v2s_mt_posix::system_error&gt; &gt;: Failed to <span class="built_in">set</span> TLS value: Invalid argument [system:22]</span><br><span class="line"></span><br><span class="line">java.lang.RuntimeException: Child process exited with code 134</span><br><span class="line">    at com.amazonaws.services.kinesis.producer.Daemon.fatalError(Daemon.java:532) ~[amazon-kinesis-producer-0.14.13.jar:na]</span><br><span class="line">    at com.amazonaws.services.kinesis.producer.Daemon.fatalError(Daemon.java:508) ~[amazon-kinesis-producer-0.14.13.jar:na]</span><br><span class="line">    at com.amazonaws.services.kinesis.producer.Daemon.startChildProcess(Daemon.java:486) ~[amazon-kinesis-producer-0.14.13.jar:na]</span><br><span class="line">    at com.amazonaws.services.kinesis.producer.Daemon.access<span class="variable">$100</span>(Daemon.java:61) ~[amazon-kinesis-producer-0.14.13.jar:na]</span><br><span class="line">    at com.amazonaws.services.kinesis.producer.Daemon<span class="variable">$1</span>.run(Daemon.java:130) ~[amazon-kinesis-producer-0.14.13.jar:na]</span><br><span class="line">    at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136) ~[na:na]</span><br><span class="line">    at java.base/java.util.concurrent.ThreadPoolExecutor<span class="variable">$Worker</span>.run(ThreadPoolExecutor.java:635) ~[na:na]</span><br><span class="line">    at java.base/java.lang.Thread.run(Thread.java:833) ~[na:na]</span><br></pre></td></tr></table></figure>
+
+<p>And this is suppose to help us how? </p>
+<p>Well, what they don’t tell you, is that <strong>the Kinesis Producer Library (KPL) only works over https</strong>. Which means that it cannot connect to our local container on the plain http port (:4566).</p>
+<p>Luckily LocalStack also exposes our AWS services on an https port (:4567), but we still need to re-run our docker container also exposing that port to the host.</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --rm -it -e SERVICES=kinesis,cloudwatch,dynamodb -p 4566:4566 -p 4567:4567 -p 4510-4559:4510-4559 localstack/localstack</span><br></pre></td></tr></table></figure>
+
+<p>Alright, so with that done we can change our configuration class.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Profile(&quot;localstack&quot;)</span></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@RequiredArgsConstructor</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LocalStackClientConfiguration</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> KinesisProducer <span class="title">kinesisProducer</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        KinesisProducerConfiguration configuration = <span class="keyword">new</span> KinesisProducerConfiguration()</span><br><span class="line">            .setKinesisEndpoint(<span class="string">&quot;localhost&quot;</span>)</span><br><span class="line">            .setKinesisPort(<span class="number">4567</span>)</span><br><span class="line">            .setCloudwatchEndpoint(<span class="string">&quot;localhost&quot;</span>)</span><br><span class="line">            .setCloudwatchPort(<span class="number">4567</span>)</span><br><span class="line">            .setVerifyCertificate(<span class="keyword">false</span>)</span><br><span class="line">            .setRegion(<span class="string">&quot;us-east-1&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> KinesisProducer(configuration);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Notice that we also have to set the <code>setVerifyCertificate()</code> to <code>false</code> since we are connecting locally, and the certificate will not be valid. </p>
+<p>When we try and run our program again, we see no errors and all our messages are being sent! 🎉</p>
+<p>That’s all folks! 👋 </p>
+<p>As always you can find the complete source on <a target="_blank" rel="noopener" href="https://github.com/VR4J/kinesis-producer-library-localstack">Github</a>.</p>
+<h2 id="Credits"><a href="#Credits" class="headerlink" title="Credits"></a>Credits</h2><p>Special thanks to <strong>Mees van Straten</strong> for pointing out the difficulty of connecting the Kinesis Producer Library to LocalStack.</p>
+
+    </div>
+  </article>
+  <div class="toc-container">
+    
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">Chapters</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Introduction"><span class="toc-text">Introduction</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Running-LocalStack"><span class="toc-text">Running LocalStack</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Using-the-Kinesis-Producer-Library-KPL"><span class="toc-text">Using the Kinesis Producer Library (KPL)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Credits"><span class="toc-text">Credits</span></a></li></ol>
+  </div>
+
+
+  </div>
+</div>
+<div class="copyright">
+
+</div>
+<div class="share" style="width: 100%;">
+  
+</div>
+
+  
+    <!-- <div class="post-nav">
+      <div class="post-nav-item post-nav-next">
+        
+          <span>〈 </span>
+          <a href="/2022/10/24/migrate-from-spring-native-to-spring-boot-3/" rel="next" title="Migrating from Spring Native to Spring Boot 3">
+          Migrating from Spring Native to Spring Boot 3
+          </a>
+        
+      </div>
+  
+      <div class="post-nav-item post-nav-prev">
+          
+      </div>
+    </div> -->
+  
+
+
+    </div>
+
+    
+
+  </div>
+  <footer class="footer text-center">
+    <div id="bottom-inner">
+        <a class="bottom-item" href="/">Home</a> |
+        <a class="bottom-item" href="/archives">Blog</a> |
+        <a class="bottom-item" href="https://github.com/VR4J" target="_blank">GitHub</a> |
+        <a class="bottom-item" href="https://hexo.io" target="_blank">Powered by hexo</a>
+        <span class="bottom-item desktop-only">Somehow liking my gibberish? Use the <a class="brave" href="https://brave.com" target="_blank">Brave Browser</a> to tip me, or feed my caffeine addiction by <a class="buymeacoffee" href="https://www.buymeacoffee.com/vreijsenj" target="_blank"> buying me a Monster</a>.</span>
+    </div>
+</footer>
+  
+
+<script>
+  (function(window, document, undefined) {
+
+    var timer = null;
+
+    function returnTop() {
+      cancelAnimationFrame(timer);
+      timer = requestAnimationFrame(function fn() {
+        var oTop = document.body.scrollTop || document.documentElement.scrollTop;
+        if (oTop > 0) {
+          document.body.scrollTop = document.documentElement.scrollTop = oTop - 50;
+          timer = requestAnimationFrame(fn);
+        } else {
+          cancelAnimationFrame(timer);
+        }
+      });
+    }
+
+    var hearts = [];
+    window.requestAnimationFrame = (function() {
+      return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function(callback) {
+          setTimeout(callback, 1000 / 60);
+        }
+    })();
+    init();
+
+    function init() {
+      css(".heart{z-index:9999;width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: absolute;}.heart:after{top: -5px;}.heart:before{left: -5px;}");
+      attachEvent();
+      gameloop();
+      addMenuEvent();
+    }
+
+    function gameloop() {
+      for (var i = 0; i < hearts.length; i++) {
+        if (hearts[i].alpha <= 0) {
+          document.body.removeChild(hearts[i].el);
+          hearts.splice(i, 1);
+          continue;
+        }
+        hearts[i].y--;
+        hearts[i].scale += 0.004;
+        hearts[i].alpha -= 0.013;
+        hearts[i].el.style.cssText = "left:" + hearts[i].x + "px;top:" + hearts[i].y + "px;opacity:" + hearts[i].alpha + ";transform:scale(" + hearts[i].scale + "," + hearts[i].scale + ") rotate(45deg);background:" + hearts[i].color;
+      }
+      requestAnimationFrame(gameloop);
+    }
+
+    /**
+     * 给logo设置点击事件
+     * 
+     * - 回到顶部
+     * - 出现爱心
+     */
+    function attachEvent() {
+      var old = typeof window.onclick === "function" && window.onclick;
+      var logo = document.getElementById("logo");
+      if (logo) {
+        logo.onclick = function(event) {
+          returnTop();
+          old && old();
+          createHeart(event);
+        }
+      }
+      
+    }
+
+    function createHeart(event) {
+      var d = document.createElement("div");
+      d.className = "heart";
+      hearts.push({
+        el: d,
+        x: event.clientX - 5,
+        y: event.clientY - 5,
+        scale: 1,
+        alpha: 1,
+        color: randomColor()
+      });
+      document.body.appendChild(d);
+    }
+
+    function css(css) {
+      var style = document.createElement("style");
+      style.type = "text/css";
+      try {
+        style.appendChild(document.createTextNode(css));
+      } catch (ex) {
+        style.styleSheet.cssText = css;
+      }
+      document.getElementsByTagName('head')[0].appendChild(style);
+    }
+
+    function randomColor() {
+      // return "rgb(" + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + ")";
+      return "#F44336";
+    }
+
+    function addMenuEvent() {
+      var menu = document.getElementById('menu-main-post');
+      if (menu) {
+        var toc = document.getElementById('toc');
+        if (toc) {
+          menu.onclick = function() {
+            if (toc) {
+              if (toc.style.display == 'block') {
+                toc.style.display = 'none';
+              } else {
+                toc.style.display = 'block';
+              }
+            }
+          };
+        } else {
+          menu.style.display = 'none';
+        }
+      }
+    }
+
+  })(window, document);
+</script>
+
+  
+
+
+
+</body>
+</html>
