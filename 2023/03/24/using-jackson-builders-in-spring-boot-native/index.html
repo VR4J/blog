@@ -1,0 +1,358 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#202020"/>
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+  <meta name="title" content="Using Jackson builders in Spring Boot Native">
+
+  
+    <meta name="publish_date" property="og:publish_date" content="2023-03-24T12:00:00+00:00">
+    <meta property="article:published_time" content="2023-03-24" />
+
+    
+      
+        <meta property="article:tag" content="GraalVM" />
+      
+        <meta property="article:tag" content="Spring Native" />
+      
+        <meta property="article:tag" content="Jackson" />
+      
+        <meta property="article:tag" content="Spring Boot 3" />
+      
+        <meta property="article:tag" content="Builder" />
+      
+        <meta property="article:tag" content="Lombok" />
+      
+    
+  
+  
+  
+    <meta name="description" content="When you love the builder pattern, and compiling to native images as much as me, you need this Jackson configuration in your Spring Boot 3 application." />
+    <meta property="og:description" content="When you love the builder pattern, and compiling to native images as much as me, you need this Jackson configuration in your Spring Boot 3 application." />
+    <meta property="twitter:description" content="When you love the builder pattern, and compiling to native images as much as me, you need this Jackson configuration in your Spring Boot 3 application." />
+  
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://blog.vreijsenj.nl/2023/03/24/using-jackson-builders-in-spring-boot-native/" />
+  <meta property="og:title" content="Using Jackson builders in Spring Boot Native" />
+
+  
+    <meta property="twitter:image" content="https://blog.vreijsenj.nl/images/using-jackson-builders-in-spring-boot-native.png" />
+    <meta property="og:image" content="https://blog.vreijsenj.nl/images/using-jackson-builders-in-spring-boot-native.png" />
+  
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="https://blog.vreijsenj.nl/2023/03/24/using-jackson-builders-in-spring-boot-native/" />
+  <meta property="twitter:title" content="Using Jackson builders in Spring Boot Native" />
+  
+  
+    <meta name="keywords" content="GraalVM,Spring Native,Jackson,Spring Boot 3,Builder,Lombok," />
+  
+
+  <meta name="author" content="Joery Vreijsen" />
+  
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  
+  
+    <link rel="canonical" href="https://www.kabisa.nl/tech/using-jackson-builders-in-spring-boot-native/" />
+  
+
+  <title> Using Jackson builders in Spring Boot Native</title>
+  
+    <!-- stylesheets list from config.yml -->
+    
+      <link rel="stylesheet" href="/css/xoxo.css">
+    
+      <link rel="stylesheet" href="/css/post.css">
+    
+      <link rel="stylesheet" href="/css/footer.css">
+    
+      <link rel="stylesheet" href="/css/contact.css">
+    
+  
+  <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.6/build/pure-min.css" integrity="sha384-Uu6IeWbM+gzNVXJcM9XV3SohHtmWE+3VGi496jvgX1jyvDTXfdK+rfZc8C1Aehk5" crossorigin="anonymous">
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="J. Vreijsen" type="application/atom+xml">
+</head>
+
+
+<body>
+  <div class="nav-container">
+    <nav class="home-menu pure-menu pure-menu-horizontal">
+  <a class="pure-menu-heading" href="/">
+    <img class="avatar" src="https://blog.vreijsenj.nl/images/logo.jpeg">
+    <span class="title">J. Vreijsen</span>
+  </a>
+
+  <ul class="pure-menu-list clearfix">
+      
+          
+            <li class="pure-menu-item"><a href="/" class="pure-menu-link">Home</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/about" class="pure-menu-link">About</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/tags" class="pure-menu-link">Tags</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/archives" class="pure-menu-link">Archives</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/contact" class="pure-menu-link">Contact</a></li>
+          
+      
+  </ul>
+   
+</nav>
+  </div>
+
+  <div class="container" id="content-outer">
+    <div class="inner" id="content-inner">
+      <div class="post-container">
+  <article class="post" id="post">
+    <header class="post-header text-center">
+      <h1 class="title">
+        Using Jackson builders in Spring Boot Native
+      </h1>
+      <span>
+        
+        <time class="time" datetime="2023-03-24T12:00:00.000Z">
+        2023-03-24
+      </time>
+        
+      </span>
+      <span class="slash">/</span>
+      <span class="post-meta">
+      <span class="post-tags">
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Builder/" rel="tag">Builder</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GraalVM/" rel="tag">GraalVM</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Jackson/" rel="tag">Jackson</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Lombok/" rel="tag">Lombok</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Boot-3/" rel="tag">Spring Boot 3</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Native/" rel="tag">Spring Native</a></li></ul>
+      </span>
+    </span>
+      <span class="slash">/</span>
+      <span class="read">Reading Time: 5 Minute</span>
+      
+        <span class="slash">/</span>
+        <span class="read">Origin: <a href="https://www.kabisa.nl/tech/using-jackson-builders-in-spring-boot-native/" target="_blank">kabisa.nl/tech</a></span>
+      
+    </header>
+
+    <div class="post-content">
+      <h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>When you’ve read a few of my earlier blog posts, you know that I cherish a secret love for the builder pattern used to create immutable objects. My default implementation includes the Jackson library for (de)serialization of this pattern, and Lombok for providing the perfect glue with almost no boilerplate code.</p>
+<p>When you’ve not read any of my earlier posts (yes, shame on you) here is the link: <a href="/2022/01/17/what-i-love-about-lombok-and-the-builder-pattern/">What I love about Lombok and the builder pattern</a></p>
+<h2 id="Shortcut"><a href="#Shortcut" class="headerlink" title="Shortcut"></a>Shortcut</h2><p>Only interested in the code? Look at the final <a target="_blank" rel="noopener" href="https://gist.github.com/VR4J/0b30b2d04f95ab37d867353ebcda3e81">gist</a>.</p>
+<h2 id="What’s-the-problem"><a href="#What’s-the-problem" class="headerlink" title="What’s the problem?"></a>What’s the problem?</h2><p>When using the builder pattern with Jackson in a regular Java Virtual Machine (JVM) environment, everything is fine, everything works fine because it allows for reflection during runtime.</p>
+<p>When using native compilation, which was recently released in Spring Boot 3 (<a target="_blank" rel="noopener" href="https://spring.io/blog/2022/09/26/native-support-in-spring-boot-3-0-0-m5">link</a>), you cannot rely on this reflection during runtime and need to configure it upfront during build time.</p>
+<p>When you do not configure anything during build time, you will run into a RuntimeException that looks something like this.</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">com.fasterxml.jackson.databind.exc.InvalidDefinitionException: Builder class nl.vreijsenj.blog.Movie<span class="variable">$Builder</span> does not have build method (name: <span class="string">&#x27;build&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="Native-Configuration"><a href="#Native-Configuration" class="headerlink" title="Native Configuration"></a>Native Configuration</h2><p>Spring Boot 3 allows for what’s called “native hints” to be declared, which are used during build time. These Native Hints allow you to specify classes or methods that should be accessible using reflection, or specify resources that would normally be excluded by the native build but are actually needed for a specific use-case.</p>
+<p>Spring Boot’s way of specifying these native hints is by implementing the <a target="_blank" rel="noopener" href="https://docs.spring.io/spring-framework/docs/6.0.0/reference/html/core.html#aot-hints">RuntimeHints</a> API.</p>
+<h2 id="Identifying-Jackson-Builders"><a href="#Identifying-Jackson-Builders" class="headerlink" title="Identifying Jackson Builders"></a>Identifying Jackson Builders</h2><p>We first need to be able to identify the builder classes that we need to configure reflection for.</p>
+<p>As you know, Lombok’s <code>@Jacksonized</code> annotation will put Jackson’s <code>@JsonPOJOBuilder</code> annotations on the builder class which we can use to identify our builder classes. </p>
+<p>Let’s see how that would look;</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">List&lt;TypeReference&gt; builders = getClasses(loader, ROOT_PACKAGE).stream()</span><br><span class="line">    .filter(clazz -&gt; clazz.getAnnotationsByType(JsonPOJOBuilder.class).length &gt; <span class="number">0</span>)</span><br><span class="line">    .map(TypeReference::of)</span><br><span class="line">    .toList();</span><br></pre></td></tr></table></figure>
+
+<p>We then have to instruct the native compilation process to allow invocation of the declared constructor and public methods, think about the build method from our error message.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hints</span><br><span class="line">    .reflection()</span><br><span class="line">    .registerTypes(builders, TypeHint.builtWith(MemberCategory.INVOKE_DECLARED_CONSTRUCTORS, MemberCategory.INVOKE_PUBLIC_METHODS))</span><br></pre></td></tr></table></figure>
+
+<h2 id="Completing-the-puzzle"><a href="#Completing-the-puzzle" class="headerlink" title="Completing the puzzle"></a>Completing the puzzle</h2><p>When we put the above into our own implementation of a <code>RuntimeHintsRegistrar</code> we get the following class:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@ImportRuntimeHints(JacksonHints.class)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JacksonHints</span> <span class="keyword">implements</span> <span class="title">RuntimeHintsRegistrar</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String ROOT_PACKAGE = <span class="string">&quot;nl.vreijsenj.streaming&quot;</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String PACKAGE_SEPARATOR = <span class="string">&quot;.&quot;</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String FOLDER_SEPARATOR = <span class="string">&quot;/&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">registerHints</span><span class="params">(RuntimeHints hints, ClassLoader loader)</span> </span>&#123;</span><br><span class="line">        List&lt;TypeReference&gt; builders = getClasses(loader, ROOT_PACKAGE).stream()</span><br><span class="line">            .filter(clazz -&gt; clazz.getAnnotationsByType(JsonPOJOBuilder.class).length &gt; <span class="number">0</span>)</span><br><span class="line">            .map(TypeReference::of)</span><br><span class="line">            .toList();</span><br><span class="line"></span><br><span class="line">        hints</span><br><span class="line">            .reflection()</span><br><span class="line">            .registerTypes(builders, TypeHint.builtWith(MemberCategory.INVOKE_DECLARED_CONSTRUCTORS, MemberCategory.INVOKE_PUBLIC_METHODS))</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> Set&lt;Class&lt;?&gt;&gt; getClasses(ClassLoader loader, String name) &#123;</span><br><span class="line">        InputStream stream = loader.getResourceAsStream(</span><br><span class="line">                name.replaceAll(<span class="string">&quot;[&quot;</span> + PACKAGE_SEPARATOR + <span class="string">&quot;]&quot;</span>, FOLDER_SEPARATOR)</span><br><span class="line">        );</span><br><span class="line"></span><br><span class="line">        BufferedReader reader = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(stream));</span><br><span class="line">        List&lt;String&gt; lines = reader.lines().toList();</span><br><span class="line"></span><br><span class="line">        Stream&lt;Class&lt;?&gt;&gt; current = lines.stream()</span><br><span class="line">            .filter(<span class="keyword">this</span>::isClassFile)</span><br><span class="line">            .map(line -&gt; getClass(line, name));</span><br><span class="line"></span><br><span class="line">        Stream&lt;Class&lt;?&gt;&gt; nested = lines.stream()</span><br><span class="line">            .filter(<span class="keyword">this</span>::isPackageFolder)</span><br><span class="line">            .map(String::trim)</span><br><span class="line">            .map(child -&gt; setChildPackageName(name, child))</span><br><span class="line">            .map(pName -&gt; getClasses(loader, pName))</span><br><span class="line">            .flatMap(Set::stream);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> Stream.concat(current, nested).collect(Collectors.toSet());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@SneakyThrows</span></span><br><span class="line">    <span class="keyword">private</span> Class&lt;?&gt; getClass(String className, String packageName) &#123;</span><br><span class="line">        <span class="keyword">return</span> Class.forName(packageName + PACKAGE_SEPARATOR + className.substring(<span class="number">0</span>, className.lastIndexOf(PACKAGE_SEPARATOR)));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">isClassFile</span><span class="params">(String path)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> path.endsWith(<span class="string">&quot;.class&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">isPackageFolder</span><span class="params">(String path)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> ! isClassFile(path);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> String <span class="title">setChildPackageName</span><span class="params">(String parent, String child)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> parent + PACKAGE_SEPARATOR + child;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>Well, there you have it, a class ready to be included in any Spring Boot 3 application.<br>Rather prefer a gist? Way ahead of you <a target="_blank" rel="noopener" href="https://gist.github.com/VR4J/0b30b2d04f95ab37d867353ebcda3e81">here is the gist</a>.</p>
+<p>That’s all folks! 👋</p>
+
+    </div>
+  </article>
+  <div class="toc-container">
+    
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">Chapters</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Introduction"><span class="toc-text">Introduction</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Shortcut"><span class="toc-text">Shortcut</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#What%E2%80%99s-the-problem"><span class="toc-text">What’s the problem?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Native-Configuration"><span class="toc-text">Native Configuration</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Identifying-Jackson-Builders"><span class="toc-text">Identifying Jackson Builders</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Completing-the-puzzle"><span class="toc-text">Completing the puzzle</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Summary"><span class="toc-text">Summary</span></a></li></ol>
+  </div>
+
+
+  </div>
+</div>
+<div class="copyright">
+
+</div>
+<div class="share" style="width: 100%;">
+  
+</div>
+
+  
+    <!-- <div class="post-nav">
+      <div class="post-nav-item post-nav-next">
+        
+          <span>〈 </span>
+          <a href="/2022/11/18/using-the-java-kinesis-producer-library-kpl-with-localstack/" rel="next" title="Using the Java Kinesis Producer Library (KPL) with LocalStack">
+          Using the Java Kinesis Producer Library (KPL) with LocalStack
+          </a>
+        
+      </div>
+  
+      <div class="post-nav-item post-nav-prev">
+          
+      </div>
+    </div> -->
+  
+
+
+    </div>
+
+    
+
+  </div>
+  <footer class="footer text-center">
+    <div id="bottom-inner">
+        <a class="bottom-item" href="/">Home</a> |
+        <a class="bottom-item" href="/archives">Blog</a> |
+        <a class="bottom-item" href="https://github.com/VR4J" target="_blank">GitHub</a> |
+        <a class="bottom-item" href="https://hexo.io" target="_blank">Powered by hexo</a>
+        <span class="bottom-item desktop-only">Somehow liking my gibberish? Use the <a class="brave" href="https://brave.com" target="_blank">Brave Browser</a> to tip me, or feed my caffeine addiction by <a class="buymeacoffee" href="https://www.buymeacoffee.com/vreijsenj" target="_blank"> buying me a Monster</a>.</span>
+    </div>
+</footer>
+  
+
+<script>
+  (function(window, document, undefined) {
+
+    var timer = null;
+
+    function returnTop() {
+      cancelAnimationFrame(timer);
+      timer = requestAnimationFrame(function fn() {
+        var oTop = document.body.scrollTop || document.documentElement.scrollTop;
+        if (oTop > 0) {
+          document.body.scrollTop = document.documentElement.scrollTop = oTop - 50;
+          timer = requestAnimationFrame(fn);
+        } else {
+          cancelAnimationFrame(timer);
+        }
+      });
+    }
+
+    var hearts = [];
+    window.requestAnimationFrame = (function() {
+      return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function(callback) {
+          setTimeout(callback, 1000 / 60);
+        }
+    })();
+    init();
+
+    function init() {
+      css(".heart{z-index:9999;width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: absolute;}.heart:after{top: -5px;}.heart:before{left: -5px;}");
+      attachEvent();
+      gameloop();
+      addMenuEvent();
+    }
+
+    function gameloop() {
+      for (var i = 0; i < hearts.length; i++) {
+        if (hearts[i].alpha <= 0) {
+          document.body.removeChild(hearts[i].el);
+          hearts.splice(i, 1);
+          continue;
+        }
+        hearts[i].y--;
+        hearts[i].scale += 0.004;
+        hearts[i].alpha -= 0.013;
+        hearts[i].el.style.cssText = "left:" + hearts[i].x + "px;top:" + hearts[i].y + "px;opacity:" + hearts[i].alpha + ";transform:scale(" + hearts[i].scale + "," + hearts[i].scale + ") rotate(45deg);background:" + hearts[i].color;
+      }
+      requestAnimationFrame(gameloop);
+    }
+
+    /**
+     * 给logo设置点击事件
+     * 
+     * - 回到顶部
+     * - 出现爱心
+     */
+    function attachEvent() {
+      var old = typeof window.onclick === "function" && window.onclick;
+      var logo = document.getElementById("logo");
+      if (logo) {
+        logo.onclick = function(event) {
+          returnTop();
+          old && old();
+          createHeart(event);
+        }
+      }
+      
+    }
+
+    function createHeart(event) {
+      var d = document.createElement("div");
+      d.className = "heart";
+      hearts.push({
+        el: d,
+        x: event.clientX - 5,
+        y: event.clientY - 5,
+        scale: 1,
+        alpha: 1,
+        color: randomColor()
+      });
+      document.body.appendChild(d);
+    }
+
+    function css(css) {
+      var style = document.createElement("style");
+      style.type = "text/css";
+      try {
+        style.appendChild(document.createTextNode(css));
+      } catch (ex) {
+        style.styleSheet.cssText = css;
+      }
+      document.getElementsByTagName('head')[0].appendChild(style);
+    }
+
+    function randomColor() {
+      // return "rgb(" + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + ")";
+      return "#F44336";
+    }
+
+    function addMenuEvent() {
+      var menu = document.getElementById('menu-main-post');
+      if (menu) {
+        var toc = document.getElementById('toc');
+        if (toc) {
+          menu.onclick = function() {
+            if (toc) {
+              if (toc.style.display == 'block') {
+                toc.style.display = 'none';
+              } else {
+                toc.style.display = 'block';
+              }
+            }
+          };
+        } else {
+          menu.style.display = 'none';
+        }
+      }
+    }
+
+  })(window, document);
+</script>
+
+  
+
+
+
+</body>
+</html>
