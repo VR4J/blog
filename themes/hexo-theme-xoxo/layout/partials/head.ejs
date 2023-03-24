@@ -66,6 +66,11 @@ if (is_home()) pageTitle += ' '  + config.subtitle;
   <meta name="author" content="Joery Vreijsen" />
   
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  
+  <% if (page.canonical) { %>
+    <link rel="canonical" href="<%= page.canonical %>" />
+  <% } %>
+
   <title><%=pageTitle%></title>
   <% if (theme.stylesheets !== undefined && theme.stylesheets.length > 0) { %>
     <!-- stylesheets list from config.yml -->

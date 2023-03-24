@@ -22,6 +22,10 @@
     </span>
       <span class="slash">/</span>
       <span class="read">Reading Time: <%=readingTime(page.content, 'Minute') %></span>
+      <% if (page.canonical) { %>
+        <span class="slash">/</span>
+        <span class="read">Origin: <a href="<%=page.canonical %>" target="_blank"><%=page.origin %></a></span>
+      <% } %>
     </header>
 
     <div class="post-content">
