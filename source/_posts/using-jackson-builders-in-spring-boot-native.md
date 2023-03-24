@@ -1,8 +1,8 @@
 ---
-title: Jackson builders in Spring Boot Native
-date: 2023-02-20 12:00:00
-icon: 
-image: /images/xxx.jpg
+title: Using Jackson builders in Spring Boot Native
+date: 2023-03-24 12:00:00
+icon: 🏗️
+image: /images/using-jackson-builders-in-spring-boot-native.png
 tags: 
     - Spring Native
     - Spring Boot 3
@@ -10,50 +10,59 @@ tags:
     - Jackson
     - Builder
     - Lombok
+origin: kabisa.nl/tech
+canonical: https://www.kabisa.nl/tech/using-jackson-builders-in-spring-boot-native/
 excerpt: When you love the builder pattern, and compiling to native images as much as me, you need this Jackson configuration in your Spring Boot 3 application.
 ---
 
 ## Introduction
 
-When you've read a few of my earlier posts, you know my secret love for the builder pattern to create immutable objects, the Jackson library for being able use this pattern for deserialization, ánd Lombok for providing the perfect glue between these two in just two annotations.
+When you've read a few of my earlier blog posts, you know that I cherish a secret love for the builder pattern used to create immutable objects. My default implementation includes the Jackson library for (de)serialization of this pattern, and Lombok for providing the perfect glue with almost no boilerplate code.
 
-When you've not read my earlier posts (yes, shame on you) here is the link: [What I love about Lombok and the builder pattern](/2022/01/17/what-i-love-about-lombok-and-the-builder-pattern/)
+When you've not read any of my earlier posts (yes, shame on you) here is the link: [What I love about Lombok and the builder pattern](/2022/01/17/what-i-love-about-lombok-and-the-builder-pattern/)
 
 ## Shortcut
 Only interested in the code? Look at the final [gist](https://gist.github.com/VR4J/0b30b2d04f95ab37d867353ebcda3e81).
 
 ## What's the problem?
-When using this in a regular Java Virtual Machine environment, everything is fine, everything works fine because it allows for reflection during runtime.
+When using the builder pattern with Jackson in a regular Java Virtual Machine (JVM) environment, everything is fine, everything works fine because it allows for reflection during runtime.
 
-When using native compilation, which was recently released in Spring Boot 3, you cannot rely on this reflection during runtime and need to configure it upfront during build time.
+When using native compilation, which was recently released in Spring Boot 3 ([link](https://spring.io/blog/2022/09/26/native-support-in-spring-boot-3-0-0-m5)), you cannot rely on this reflection during runtime and need to configure it upfront during build time.
 
-The Runtime Exception will look something like the following.
+When you do not configure anything during build time, you will run into a RuntimeException that looks something like this.
 ```sh
 com.fasterxml.jackson.databind.exc.InvalidDefinitionException: Builder class nl.vreijsenj.blog.Movie$Builder does not have build method (name: 'build')
 ```
 
 ## Native Configuration
-Spring Boot 3 allows for what's called "native hints" to be declared which are used during build time. These Native Hints allow you to specify classes of which use reflection, or specify resources that would normally be excluded by the native build but are actually needed for a specific use-case.
+Spring Boot 3 allows for what's called "native hints" to be declared, which are used during build time. These Native Hints allow you to specify classes or methods that should be accessible using reflection, or specify resources that would normally be excluded by the native build but are actually needed for a specific use-case.
 
 Spring Boot's way of specifying these native hints is by implementing the [RuntimeHints](https://docs.spring.io/spring-framework/docs/6.0.0/reference/html/core.html#aot-hints) API.
 
 ## Identifying Jackson Builders
 We first need to be able to identify the builder classes that we need to configure reflection for.
 
-As you know Lombok's `@Jacksonized` annotation will put Jackson's `@JsonPOJOBuilder` annotations on the builder class which we can use to identify our classes. 
+As you know, Lombok's `@Jacksonized` annotation will put Jackson's `@JsonPOJOBuilder` annotations on the builder class which we can use to identify our builder classes. 
 
 Let's see how that would look;
 
 ```java
-List<TypeReference> classes = getClasses(loader, ROOT_PACKAGE).stream()
+List<TypeReference> builders = getClasses(loader, ROOT_PACKAGE).stream()
     .filter(clazz -> clazz.getAnnotationsByType(JsonPOJOBuilder.class).length > 0)
     .map(TypeReference::of)
     .toList();
 ```
 
+We then have to instruct the native compilation process to allow invocation of the declared constructor and public methods, think about the build method from our error message.
+
+```java
+hints
+    .reflection()
+    .registerTypes(builders, TypeHint.builtWith(MemberCategory.INVOKE_DECLARED_CONSTRUCTORS, MemberCategory.INVOKE_PUBLIC_METHODS))
+```
 
 ## Completing the puzzle
-When we put the above into our own implementation of a `RuntimeHintsRegistrar` we get the following class.
+When we put the above into our own implementation of a `RuntimeHintsRegistrar` we get the following class:
 
 ```java
 @Configuration
@@ -122,10 +131,3 @@ Well, there you have it, a class ready to be included in any Spring Boot 3 appli
 Rather prefer a gist? Way ahead of you [here is the gist](https://gist.github.com/VR4J/0b30b2d04f95ab37d867353ebcda3e81).
 
 That’s all folks! 👋
-
-
-
-
-
-
-
